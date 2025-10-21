@@ -1,0 +1,33 @@
+/* styles.css - clean white theme for Jobpatra */
+:root{
+  --accent:#1b74a6;
+  --muted:#666;
+  --bg:#ffffff;
+  --card:#fafafa;
+}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:0; background:var(--bg); color:#222}
+.container{max-width:960px;margin:0 auto;padding:18px}
+.header{border-bottom:1px solid #f0f0f0;padding:14px 0;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95))}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:56px;height:56px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.header h1{margin:0;font-size:20px}
+.tagline{margin:0;color:var(--muted);font-size:13px}
+.main{padding:18px 0}
+.search-section{padding:12px;background:#fff;border-radius:8px;border:1px solid #f2f2f2;box-shadow:0 1px 0 rgba(0,0,0,0.02)}
+.row{display:flex;gap:10px;margin-bottom:10px}
+.input{flex:1;padding:12px;border-radius:8px;border:1px solid #eee;font-size:15px}
+.actions{justify-content:flex-end}
+.btn{padding:10px 14px;border-radius:8px;border:1px solid #e6e6e6;background:#fff;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff;border:0}
+.btn.small{padding:6px 8px;border-radius:6px;background:#1b74a6;color:#fff;text-decoration:none;margin-right:8px}
+.results{margin-top:18px}
+.card{display:flex;gap:12px;padding:12px;border-radius:10px;background:var(--card);border:1px solid #f2f2f2;margin-bottom:12px;align-items:center}
+.thumb{width:64px;height:64px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;font-weight:700;color:#666}
+.card-title{font-weight:800;font-size:16px}
+.card-meta{color:var(--muted);font-size:13px;margin-top:6px}
+.card-desc{margin-top:8px;color:#333;font-size:14px}
+.card-actions{margin-top:10px}
+.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed #f1f1f1;border-radius:8px}
+.footer{padding:18px;border-top:1px solid #f6f6f6;text-align:center;color:var(--muted);font-size:13px}
+@media (max-width:720px){.row{flex-direction:column} .thumb{width:48px;height:48px} .logo{width:46px;height:46px}}

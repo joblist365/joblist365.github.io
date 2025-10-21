@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "note": "Placeholder dataset. Replace with full Jobpatra dataset."
+  },
+  "states": [
+    {
+      "name": "Karnataka",
+      "cities": [
+        {
+          "name": "Bengaluru",
+          "sectors": [
+            {
+              "sector": "IT & Software",
+              "companies": [
+                {
+                  "id": "cmp0001",
+                  "name": "Infosys Ltd",
+                  "website": "https://www.infosys.com/careers/",
+                  "linkedin": "https://www.linkedin.com/company/infosys/",
+                  "jobs_offered": [
+                    "Software Engineer",
+                    "QA Engineer",
+                    "Data Scientist"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
