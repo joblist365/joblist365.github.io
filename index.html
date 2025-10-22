@@ -1,97 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JobPatra - Find Your Dream Job</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 0;
-      color: #333;
-      text-align: center;
-    }
-    header {
-      background: #0066cc;
-      color: white;
-      padding: 20px 0;
-      font-size: 24px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-    .search-box {
-      margin: 40px auto;
-      max-width: 400px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-    .search-box input {
-      width: 70%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    .search-box button {
-      background: #0066cc;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .search-box button:hover {
-      background: #004c99;
-    }
-    .categories {
-      margin: 40px auto;
-      max-width: 800px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 20px;
-      padding: 0 20px;
-    }
-    .category {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .category:hover {
-      transform: scale(1.05);
-    }
-    footer {
-      background: #f1f1f1;
-      padding: 15px;
-      font-size: 14px;
-      color: #555;
-      margin-top: 40px;
-    }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Jobpatra — India Jobs Explorer</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <header>JobPatra</header>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">JP</div>
+        <div>
+          <h1>Jobpatra</h1>
+          <p class="tag">India’s Complete Company & Career Explorer — State → City → Sector → Company</p>
+        </div>
+      </div>
+    </div>
+  </header>
 
-  <div class="search-box">
-    <input type="text" placeholder="Search for jobs, skills, or companies..." />
-    <button>Search</button>
-  </div>
+  <main class="wrap main">
+    <section class="controls">
+      <div class="row">
+        <select id="stateSelect"><option value="">Select state</option></select>
+        <select id="citySelect" disabled><option value="">Select city</option></select>
+      </div>
+      <div class="row">
+        <select id="sectorSelect" disabled><option value="">Select sector</option></select>
+        <input id="searchInput" placeholder="Search company or role (e.g. 'Software Engineer')" />
+      </div>
+      <div class="row actions">
+        <button id="filterBtn" class="btn">Filter</button>
+        <button id="resetBtn" class="btn ghost">Reset</button>
+      </div>
+    </section>
 
-  <section class="categories">
-    <div class="category">Software Jobs</div>
-    <div class="category">Government Jobs</div>
-    <div class="category">Internships</div>
-    <div class="category">Remote Jobs</div>
-    <div class="category">Startup Roles</div>
-    <div class="category">Freelance Projects</div>
-  </section>
+    <section id="results" class="results">
+      <div class="empty">Select a state & city to view companies.</div>
+    </section>
+  </main>
 
-  <footer>© 2025 JobPatra. All rights reserved.</footer>
+  <footer class="site-footer">
+    <div class="wrap">
+      <small>© Jobpatra — Full dataset package. Replace or expand <code>data.json</code> as you like.</small>
+    </div>
+  </footer>
+
+<script src="script.js"></script>
 </body>
 </html>
