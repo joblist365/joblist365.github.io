@@ -186,17 +186,19 @@
     }
 
     function searchJobs() {
-      const sector = document.getElementById('sector').value;
-      const state = document.getElementById('state').value;
-      const city = document.getElementById('city').value;
-      const role = document.getElementById('role').value;
+  const sector = document.getElementById('sector').value;
+  const state = document.getElementById('state').value;
+  const city = document.getElementById('city').value;
+  const role = document.getElementById('role').value;
 
-      if (!sector) {
-        alert("Please select a sector first.");
-        return;
-      }
+  if (!sector) {
+    alert("Please select a sector first.");
+    return;
+  }
 
-      alert(`Searching ${sector} jobs${state ? ' in ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
+  // ✅ Redirect to results.html with filter parameters
+  const query = `results.html?sector=${encodeURIComponent(sector)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}&role=${encodeURIComponent(role)}`;
+  window.location.href = query;
     }
 
     // ✅ Make all dropdowns typeable and selectable (no design changes)
