@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JobPatra — Companies</title>
+<style>
+  :root{
+    --blue:#0b66d0; --muted:#6b7280; --card:#ffffff; --bg:#f3f7fb;
+    --accent:#0b66d0; --success:#2e7d32; --danger:#d32f2f;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Arial,sans-serif;background:var(--bg);color:#111}
+  header{background:var(--blue);color:white;padding:22px 18px;text-align:center}
+  header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+  header p{margin:6px 0 0;font-size:13px;opacity:0.95}
+  .page{max-width:1100px;margin:18px auto;padding:0 14px}
+  .note{background:#eaf2ff;border-left:4px solid var(--blue);padding:14px;border-radius:10px;color:#133165;margin:14px 0;font-size:14px}
+  .search-area{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .filters{flex:0 1 360px;background:white;padding:14px;border-radius:12px;box-shadow:0 8px 24px rgba(12,24,64,0.06)}
+  .filters h3{margin:0 0 10px;font-size:16px}
+  label{display:block;font-weight:600;font-size:13px;margin-bottom:6px;color:#333}
+  .field{width:100%;margin-bottom:12px}
+  input[type="text"], .select-like {
+    width:100%;padding:12px 12px;border-radius:10px;border:1px solid #d1d5db;font-size:14px;background:white;
+  }
+  .multi-note{font-size:12px;color:var(--muted);margin-top:6px}
+  .ad-wrap{width:100%;display:flex;justify-content:center;margin:10px 0}
+  .ad{max-width:728px;width:100%;height:90px;background:#fff;border-radius:6px;border:1px solid #e3e7ee;display:flex;align-items:center;justify-content:center;color:#666;font-weight:600}
+  .results{flex:1 1 520px;min-width:320px}
+  .top-controls{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}
+  .search-box{display:flex;gap:8px;align-items:center;flex:1;min-width:220px}
+  .search-box input{padding:12px;border-radius:10px;border:1px solid #d1d5db;width:100%}
+  .btn{padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:white;font-weight:600;cursor:pointer}
+  .btn.secondary{background:#eef3ff;color:var(--accent);border:1px solid #dfeaff}
+  .controls-right{display:flex;gap:8px;align-items:center}
+  .company-list{display:flex;flex-direction:column;gap:12px}
+  .card{
+    display:flex;gap:12px;align-items:flex-start;background:var(--card);padding:14px;border-radius:12px;border:1px solid #eef2f6;
+    box-shadow:0 6px 18px rgba(16,24,40,0.04);
+  }
+  .logo{width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,#f3f8ff,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:18px}
+  .meta{flex:1;min-width:0}
+  .meta h4{margin:0;font-size:16px}
+  .meta .muted{color:var(--muted);font-size:13px;margin-top:6px}
+  .chip{display:inline-block;background:#f6f9ff;color:var(--accent);padding:6px 10px;border-radius:999px;font-size:12px;margin-right:8px;border:1px solid #e2efff}
+  .roles{margin-top:8px;font-size:13px}
+  .actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .actions .small{padding:8px 10px;border-radius:8px;border:1px solid #e6eefc;background:white;color:var(--accent);font-weight:600;cursor:pointer}
+  .actions .danger{background:#fff2f2;border:1px solid #ffd6d6;color:var(--danger)}
+  .tiny{font-size:12px;color:var(--muted)}
+  .not-interested{opacity:0.45}
+  .bottom-bar{margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .mylist{background:white;padding:12px;border-radius:10px;border:1px solid #eef2f6}
+  .empty{padding:24px;text-align:center;color:var(--muted);background:#fff;border-radius:10px;border:1px dashed #e6eefc}
+  /* small screens */
+  @media (max-width:820px){
+    .search-area{flex-direction:column}
+    .filters{order:2}
+    .results{order:1}
+    .actions{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>JobPatra</h1>
+    <p>India’s Company & Career Explorer</p>
+  </header>
+
+  <main class="page">
+    <div class="note">
+      Note: some companies list openings only on their own career pages — visiting a company’s page shows genuine interest and is often the fastest way to apply.
+    </div>
+
+    <div class="search-area">
+      <!-- left: filters -->
+      <aside class="filters" aria-label="Search filters">
+        <h3>Find jobs by sector, state & role</h3>
+
+        <div class="field">
+          <label for="sector">Sector</label>
+          <input id="sector" class="select-like" type="text" placeholder="Select sector (required)">
+          <div class="multi-note">Pick a sector (required). States & roles optional.</div>
+        </div>
+
+        <div class="field">
+          <label for="states">State(s) (optional)</label>
+          <input id="states" type="text" placeholder="Type to search states (multi-select)">
+          <div class="multi-note">After selecting state(s), city suggestions (on index) can be filtered.</div>
+        </div>
+
+        <div class="field">
+          <label for="roleFilter">Role (optional)</label>
+          <input id="roleFilter" type="text" placeholder="Type role to filter (optional)">
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" id="goSearch">Search</button>
+          <button class="btn secondary" id="resetPrefs">Reset</button>
+        </div>
+
+        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+          <strong>Tip:</strong> Type to filter quickly. Click <em>Search</em> to view companies.
+        </div>
+      </aside>
+
+      <!-- right: results -->
+      <section class="results">
+        <!-- centered ad banner below filters (1 inch gap visually) -->
+        <div class="ad-wrap" aria-hidden="true" style="margin-top:6px;">
+          <div class="ad">Ad Banner</div>
+        </div>
+
+        <div class="top-controls" style="margin-top:12px;">
+          <div style="display:flex;gap:8px;align-items:center;flex:1">
+            <div class="search-box" style="flex:1">
+              <input id="globalSearch" type="text" placeholder="Search">
+            </div>
+            <div class="controls-right">
+              <button class="btn secondary" id="toggleRoleFilter">Filter by role</button>
+              <button class="btn" id="applyNow">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="companyList" class="company-list" aria-live="polite"></div>
+
+        <div class="bottom-bar">
+          <div class="mylist" style="flex:1;">
+            <strong>My Companies</strong>
+            <div id="myCompanies" style="margin-top:8px"></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="resetAll" class="btn secondary">Reset All Preferences</button>
+            <div class="tiny">© Jobpatra — Built for careers. Clean & offline-ready demo.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+<script>
+/* -------------------------
+   Sample company dataset — replace/expand as needed.
+   Each company object:
+   { id, name, sector, state, city, roles:[], careerUrl, linkedinUrl }
+   ------------------------- */
+
+const companies = [
+  { id: 'c1', name:'BlueByte Solutions', sector:'IT & Software', state:'Karnataka', city:'Bengaluru', roles:['Frontend Developer','Backend Developer','DevOps Engineer'], careerUrl:'https://bluebyte.example/careers', linkedinUrl:'https://linkedin.com/company/bluebyte' },
+  { id: 'c2', name:'MediHeal Pharmaceuticals', sector:'Healthcare & Pharma', state:'Maharashtra', city:'Mumbai', roles:['Quality Analyst','Regulatory Affairs'], careerUrl:'https://mediheal.example/careers', linkedinUrl:'https://linkedin.com/company/mediheal' },
+  { id: 'c3', name:'FreshFoods Pvt Ltd', sector:'Food & FMCG', state:'Tamil Nadu', city:'Chennai', roles:['Supply Chain Manager','Sales Executive'], careerUrl:'https://freshfoods.example/careers', linkedinUrl:'https://linkedin.com/company/freshfoods' },
+  { id: 'c4', name:'CloudWave', sector:'IT & Software', state:'Telangana', city:'Hyderabad', roles:['Data Scientist','ML Engineer','Product Manager'], careerUrl:'https://cloudwave.example/careers', linkedinUrl:'https://linkedin.com/company/cloudwave' },
+  { id: 'c5', name:'CitiBanking', sector:'Banking & Finance', state:'Delhi', city:'New Delhi', roles:['Relationship Manager','Credit Analyst'], careerUrl:'https://citibanking.example/careers', linkedinUrl:'https://linkedin.com/company/citibanking' },
+  { id: 'c6', name:'HealNow Clinics', sector:'Healthcare & Pharma', state:'Karnataka', city:'Bengaluru', roles:['Nurse','Doctor'], careerUrl:'https://healnow.example/careers', linkedinUrl:'https://linkedin.com/company/healnow' },
+  { id: 'c7', name:'Nomad Travels', sector:'Travel & Tourism', state:'Goa', city:'Panaji', roles:['Tour Manager','Digital Marketer'], careerUrl:'https://nomad.example/careers', linkedinUrl:'https://linkedin.com/company/nomad' },
+  { id: 'c8', name:'EduCore', sector:'Education & EdTech', state:'Maharashtra', city:'Pune', roles:['Curriculum Designer','Frontend Developer'], careerUrl:'https://educore.example/careers', linkedinUrl:'https://linkedin.com/company/educore' },
+  { id: 'c9', name:'GreenEnergy Ltd', sector:'Energy & Environment', state:'Tamil Nadu', city:'Coimbatore', roles:['Field Engineer','Project Manager'], careerUrl:'https://greenenergy.example/careers', linkedinUrl:'https://linkedin.com/company/greenenergy' },
+  { id: 'c10', name:'BuildRight Constructions', sector:'Construction & Real Estate', state:'Karnataka', city:'Mysuru', roles:['Site Engineer','Procurement'], careerUrl:'https://buildright.example/careers', linkedinUrl:'https://linkedin.com/company/buildright' }
+];
+
+/* -------------------------
+   Storage keys & state
+   ------------------------- */
+const STORAGE = {
+  HIDE: 'jobpatra_hidden_companies',       // don't show
+  NOT_INTEREST: 'jobpatra_not_interested', // not interested
+  MYCOMP: 'jobpatra_my_companies'          // added
+};
+
+let hiddenCompanies = new Set(JSON.parse(localStorage.getItem(STORAGE.HIDE) || '[]'));
+let notInterested = new Set(JSON.parse(localStorage.getItem(STORAGE.NOT_INTEREST) || '[]'));
+let myCompanies = new Set(JSON.parse(localStorage.getItem(STORAGE.MYCOMP) || '[]'));
+
+/* -------------------------
+   Utility: read querystring or localStorage saved search
+   ------------------------- */
+function readSearchParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const q = {}; // sector, states (csv), roles (csv)
+  if (urlParams.has('sector')) q.sector = urlParams.get('sector');
+  if (urlParams.has('states')) q.states = urlParams.get('states').split(',').map(s=>s.trim()).filter(Boolean);
+  if (urlParams.has('roles')) q.roles = urlParams.get('roles').split(',').map(s=>s.trim()).filter(Boolean);
+  // fallback to localStorage key saved by index page if exists
+  try {
+    const saved = JSON.parse(localStorage.getItem('jobpatraSearch') || 'null');
+    if (saved && !q.sector) q.sector = saved.sector;
+    if (saved && !q.states) q.states = saved.states;
+    if (saved && !q.roles) q.roles = saved.roles;
+  } catch(e){}
+  return q;
+}
+
+/* -------------------------
+   Render / UI
+   ------------------------- */
+const companyListEl = document.getElementById('companyList');
+const myCompaniesEl = document.getElementById('myCompanies');
+const globalSearchInput = document.getElementById('globalSearch');
+const sectorInput = document.getElementById('sector');
+const statesInput = document.getElementById('states');
+const roleFilterInput = document.getElementById('roleFilter');
+
+function saveSets(){
+  localStorage.setItem(STORAGE.HIDE, JSON.stringify([...hiddenCompanies]));
+  localStorage.setItem(STORAGE.NOT_INTEREST, JSON.stringify([...notInterested]));
+  localStorage.setItem(STORAGE.MYCOMP, JSON.stringify([...myCompanies]));
+}
+
+function renderCompanyList(filterText='', roleText='', sectorText='', statesList=[]) {
+  // Filter logic: sector required if provided; states optional; role optional; search over name/city/roles
+  let rows = companies.filter(c => {
+    if (hiddenCompanies.has(c.id)) return false;
+    if (sectorText && sectorText.trim() && c.sector.toLowerCase().indexOf(sectorText.trim().toLowerCase())===-1) return false;
+    if (Array.isArray(statesList) && statesList.length>0 && !statesList.includes(c.state)) return false;
+    if (roleText && roleText.trim()){
+      const rt = roleText.trim().toLowerCase();
+      if (!c.roles.some(r => r.toLowerCase().includes(rt))) return false;
+    }
+    if (filterText && filterText.trim()){
+      const ft = filterText.trim().toLowerCase();
+      if (!(c.name.toLowerCase().includes(ft) || c.city.toLowerCase().includes(ft) || c.roles.some(r=>r.toLowerCase().includes(ft)))) return false;
+    }
+    return true;
+  });
+
+  // Sort: not interested go to end
+  rows.sort((a,b)=>{
+    const ai=notInterested.has(a.id)?1:0;
+    const bi=notInterested.has(b.id)?1:0;
+    if (ai!==bi) return ai-bi; // put not-interested later
+    return a.name.localeCompare(b.name);
+  });
+
+  companyListEl.innerHTML = '';
+  if (rows.length===0){
+    companyListEl.innerHTML = `<div class="empty">No companies found. Try wider filters or reset preferences.</div>`;
+    return;
+  }
+
+  rows.forEach(c=>{
+    const card = document.createElement('article');
+    card.className = 'card' + (notInterested.has(c.id)?' not-interested':'');
+    card.innerHTML = `
+      <div class="logo" aria-hidden="true">${c.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+      <div class="meta">
+        <h4>${c.name}</h4>
+        <div class="muted">${c.sector} • ${c.city}, ${c.state}</div>
+        <div class="roles">${c.roles.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
+      </div>
+      <div class="actions">
+        <a class="small" href="${c.careerUrl}" target="_blank" rel="noopener">Visit Career</a>
+        <a class="small" href="${c.linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="small add-btn">${ myCompanies.has(c.id) ? 'Added' : 'Add' }</button>
+          <button class="small danger notint-btn">${ notInterested.has(c.id) ? 'Marked' : 'Not interested' }</button>
+          <button class="small" data-id="${c.id}" onclick="dontShowCompany('${c.id}')">Don't show</button>
+        </div>
+      </div>
+    `;
+    // Attach handlers
+    const addBtn = card.querySelector('.add-btn');
+    addBtn.addEventListener('click', ()=>{
+      if (myCompanies.has(c.id)){
+        myCompanies.delete(c.id);
+        addBtn.textContent = 'Add';
+      } else {
+        myCompanies.add(c.id);
+        addBtn.textContent = 'Added';
+      }
+      saveSets(); renderMyCompanies();
+    });
+
+    const notintBtn = card.querySelector('.notint-btn');
+    notintBtn.addEventListener('click', ()=>{
+      if (notInterested.has(c.id)){
+        notInterested.delete(c.id); notintBtn.textContent='Not interested'; card.classList.remove('not-interested');
+      } else {
+        notInterested.add(c.id); notintBtn.textContent='Marked'; card.classList.add('not-interested');
+      }
+      saveSets(); renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput());
+      renderMyCompanies();
+    });
+
+    companyListEl.appendChild(card);
+  });
+}
+
+function dontShowCompany(id){
+  hiddenCompanies.add(id);
+  saveSets();
+  renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput());
+  renderMyCompanies();
+}
+
+function renderMyCompanies(){
+  const list = [...myCompanies].map(id=>companies.find(c=>c.id===id)).filter(Boolean);
+  myCompaniesEl.innerHTML = '';
+  if (list.length===0){
+    myCompaniesEl.innerHTML = `<div class="tiny">No companies added yet.</div>`;
+    return;
+  }
+  list.forEach(c=>{
+    const div = document.createElement('div');
+    div.style.display='flex';div.style.justifyContent='space-between';div.style.alignItems='center';div.style.marginBottom='8px';
+    div.innerHTML = `<div style="font-size:14px">${c.name} <div class="tiny">${c.city}, ${c.state}</div></div>
+      <div style="display:flex;gap:8px"><button class="small" onclick="removeFromMy('${c.id}')">Remove</button>
+      <a class="small" href="${c.careerUrl}" target="_blank">Career</a></div>`;
+    myCompaniesEl.appendChild(div);
+  });
+}
+
+function removeFromMy(id){
+  myCompanies.delete(id);
+  saveSets();
+  renderMyCompanies();
+  renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput());
+}
+
+/* helpers to parse multi states typed by comma or newline */
+function parseStatesInput(){
+  const v = statesInput.value.trim();
+  if (!v) return [];
+  return v.split(',').map(s=>s.trim()).filter(Boolean);
+}
+
+/* hookup search controls */
+document.getElementById('goSearch').addEventListener('click', ()=>{
+  // Read filters and render results
+  const s = sectorInput.value.trim();
+  const st = parseStatesInput();
+  const r = roleFilterInput.value.trim();
+  // Optionally save last search for back navigation
+  localStorage.setItem('jobpatraSearch', JSON.stringify({sector:s, states:st, roles: r? [r]: []}));
+  renderCompanyList(globalSearchInput.value, r, s, st);
+});
+
+document.getElementById('resetPrefs').addEventListener('click', ()=>{
+  sectorInput.value=''; statesInput.value=''; roleFilterInput.value=''; globalSearchInput.value='';
+  renderCompanyList();
+});
+
+document.getElementById('resetAll').addEventListener('click', ()=>{
+  if (!confirm('Reset hidden, not-interested and My Companies?')) return;
+  hiddenCompanies.clear(); notInterested.clear(); myCompanies.clear();
+  saveSets();
+  renderCompanyList();
+  renderMyCompanies();
+});
+
+globalSearchInput.addEventListener('input', ()=> renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput()));
+roleFilterInput.addEventListener('input', ()=> renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput()));
+sectorInput.addEventListener('input', ()=> {/* optional: show suggestions */});
+statesInput.addEventListener('input', ()=> {/* optional: show suggestions */});
+
+/* Initialize from storage / query */
+(function init(){
+  renderMyCompanies();
+  const q = readSearchParams();
+  if (q.sector) sectorInput.value = q.sector;
+  if (q.states) statesInput.value = Array.isArray(q.states)? q.states.join(', ') : q.states;
+  if (q.roles) roleFilterInput.value = (Array.isArray(q.roles) ? q.roles[0] : q.roles) || '';
+  // initial render (if index saved something it will reflect)
+  renderCompanyList(globalSearchInput.value, roleFilterInput.value, sectorInput.value, parseStatesInput());
+})();
+
+/* expose for inline onclick usage */
+window.dontShowCompany = dontShowCompany;
+
+</script>
+</body>
+  </html>
