@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JobPatra — India Company & Career Explorer</title>
+
+  <!-- Styles: clean white + blue professional look -->
+  <style>
+    :root{
+      --blue:#0a5ea8;
+      --blue-2:#0a4f88;
+      --muted:#6b7280;
+      --bg:#f6fbff;
+      --card:#ffffff;
+      --accent:#e6f0fb;
+      --chip:#eef6ff;
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,var(--bg),#fff);
+      color:#111827;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:24px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+    }
+
+    header.site {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .logo {
+      width:44px;
+      height:44px;
+      background:linear-gradient(180deg,#48a6ff,#0a5ea8);
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      box-shadow:0 6px 18px rgba(10,94,168,0.15);
+    }
+    h1{
+      margin:0;
+      font-size:26px;
+      color:var(--blue-2);
+      line-height:1;
+    }
+    p.lead{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    /* Card */
+    .card {
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 8px 30px rgba(16,24,40,0.06);
+    }
+
+    .top-message{
+      margin:18px 0;
+      padding:14px 16px;
+      border-radius:12px;
+      background:linear-gradient(90deg,#f2f9ff,#eef7ff);
+      border:1px solid rgba(10,94,168,0.06);
+      color:#08365b;
+      font-size:14px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    label.small { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+
+    /* input-like selectable boxes */
+    .select-like {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      min-height:48px;
+      border-radius:10px;
+      padding:8px;
+      border:1px solid #e6eef8;
+      background: #fff;
+    }
+
+    .chip {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      background:var(--chip);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      color:var(--blue-2);
+      border:1px solid rgba(10,94,168,0.06);
+    }
+    .chip .x{cursor:pointer;color:var(--blue-2);font-weight:700}
+
+    .search-input {
+      border: none;
+      outline: none;
+      min-width:140px;
+      font-size:14px;
+      padding:6px;
+      background:transparent;
+    }
+
+    /* suggestions dropdown */
+    .suggestions {
+      position:relative;
+    }
+    .suggestions-list{
+      position:absolute;
+      left:0;
+      right:0;
+      top:calc(100% + 8px);
+      z-index:40;
+      background:white;
+      border-radius:10px;
+      box-shadow:0 10px 30px rgba(16,24,40,0.08);
+      max-height:240px;
+      overflow:auto;
+      border:1px solid #e6eef8;
+    }
+    .suggestion-item{
+      padding:10px 12px;
+      font-size:14px;
+      cursor:pointer;
+      color:#0b1220;
+    }
+    .suggestion-item:hover{
+      background:#f3f8ff;
+    }
+
+    /* layout rows */
+    .row { display:flex; gap:12px; align-items:flex-start; }
+    @media(min-width:720px){
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .row-2col { grid-column: span 2; display:flex; gap:12px; }
+    }
+
+    /* action buttons */
+    .actions {
+      display:flex;
+      gap:12px;
+      margin-top:8px;
+      align-items:center;
+    }
+    button.btn {
+      background:var(--blue);
+      color:white;
+      border:none;
+      padding:10px 16px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow:0 8px 20px rgba(10,94,168,0.12);
+    }
+    button.btn.secondary{
+      background:white;
+      color:var(--blue);
+      border:1px solid #e6eef8;
+      box-shadow:none;
+    }
+    .muted { color:var(--muted); font-size:13px; }
+
+    /* ad banner placeholder (approx 1 inch gap below selectors) */
+    .ad-area { height:72px; display:flex; justify-content:center; align-items:center; margin:18px 0; }
+    .ad-placeholder {
+      height:60px;
+      border-radius:8px;
+      width:100%;
+      max-width:728px;
+      background:linear-gradient(90deg,#f9fafb,#fff);
+      border:1px dashed rgba(10,94,168,0.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    /* results */
+    .results {
+      margin-top:16px;
+      display:grid;
+      gap:10px;
+    }
+    .company {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px;
+      border-radius:10px;
+      background:linear-gradient(180deg,#fff,#fbfeff);
+      border:1px solid #eef4fa;
+    }
+    .company .meta { color:var(--muted); font-size:13px; }
+    .company .name { font-weight:700; color:#0b1220; }
+
+    /* footer */
+    footer.site-foot{
+      margin-top:20px;
+      font-size:13px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    /* small helper */
+    .note { font-size:12px; color:var(--muted); margin-top:6px; }
+
+    /* input focus */
+    .select-like:focus-within{ box-shadow: 0 6px 20px rgba(10,94,168,0.06); border-color: rgba(10,94,168,0.12) }
+
+    /* small pills for counts */
+    .count-pill{
+      background:#f1f5f9;
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="site">
+      <div class="logo">JP</div>
+      <div>
+        <h1>Jobpatra</h1>
+        <p class="lead">India’s Company & Career Explorer — find companies & roles across states and cities</p>
+      </div>
+    </header>
+
+    <div class="card">
+
+      <div class="top-message">
+        <strong>Note:</strong> Some companies may not advertise on job sites — they list openings only on their own career pages. Visiting a company’s career page shows genuine interest and is often the fastest way to apply.
+      </div>
+
+      <div class="form-grid" id="filters">
+
+        <!-- Sector (required) -->
+        <div>
+          <label class="small" for="sectorInput">Sector <span style="color:#d9534f">*</span></label>
+          <div class="select-like suggestions" id="sectorWrap">
+            <input id="sectorInput" class="search-input" placeholder="Type or choose sector" autocomplete="off">
+            <div id="sectorSuggestions" class="suggestions-list" style="display:none"></div>
+          </div>
+          <div class="note">Pick a sector (required). States & Cities optional. Roles optional.</div>
+        </div>
+
+        <!-- States (optional, multi-select) -->
+        <div>
+          <label class="small" for="stateInput">State(s) (optional)</label>
+          <div class="select-like suggestions" id="stateWrap">
+            <div id="selectedStates" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+            <input id="stateInput" class="search-input" placeholder="Type to search states" autocomplete="off">
+          </div>
+          <div class="note">You may select multiple states. After selecting state(s) the city suggestions update to those states only.</div>
+          <div style="margin-top:8px;"><span class="count-pill" id="stateCount">0 selected</span></div>
+        </div>
+
+        <!-- Cities (optional, filtered by state) -->
+        <div>
+          <label class="small" for="cityInput">City (optional)</label>
+          <div class="select-like suggestions" id="cityWrap">
+            <div id="selectedCities" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+            <input id="cityInput" class="search-input" placeholder="Type to search cities" autocomplete="off">
+            <div id="citySuggestions" class="suggestions-list" style="display:none"></div>
+          </div>
+          <div class="note">Cities list depends on selected states. Leave blank to include all cities for selected states.</div>
+        </div>
+
+        <!-- Roles (optional, multi-select searchable, A→Z sorted) -->
+        <div>
+          <label class="small" for="roleInput">Role(s) (optional)</label>
+          <div class="select-like suggestions" id="roleWrap">
+            <div id="selectedRoles" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+            <input id="roleInput" class="search-input" placeholder="Type to search roles" autocomplete="off">
+            <div id="roleSuggestions" class="suggestions-list" style="display:none"></div>
+          </div>
+          <div class="note">Role filter is optional. You can select multiple roles. Roles are sorted A→Z.</div>
+        </div>
+
+        <!-- One-inch gap here then ad banner -->
+        <div class="row-2col" style="margin-top:6px"></div>
+
+      </div> <!-- form-grid -->
+
+      <!-- Ad area (approx 1 inch from selectors) -->
+      <div class="ad-area">
+        <!-- Google AdSense example placeholder (replace with your AdSense code).
+             To use AdSense: insert your <ins class="adsbygoogle"...> code here and enable JS.
+             For demo we show a placeholder box. -->
+        <div class="ad-placeholder" id="adPlaceholder">Ad Banner (AdSense placeholder)</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button id="searchBtn" class="btn">Search</button>
+        <button id="resetBtn" class="btn secondary">Reset</button>
+        <div style="flex:1"></div>
+        <div class="muted">Showing sample data — extend dataset in <code>citiesByState</code> and <code>roles</code> arrays.</div>
+      </div>
+
+      <!-- Results area -->
+      <div class="results" id="results">
+        <div class="muted" id="noResults">No companies found. Try wider filters.</div>
+      </div>
+
+    </div> <!-- card -->
+
+    <footer class="site-foot">
+      © Jobpatra — Built for careers. Simple, clean & offline-ready demo.
+    </footer>
+
+  </div> <!-- wrap -->
+
+  <!-- --- Script: data + behaviour --- -->
+  <script>
+    /* ----------------------------
+       Sample data (expand as needed)
+       ---------------------------- */
+
+    // ~25 sectors (sample)
+    const sectors = [
+      "Information Technology & Software",
+      "Healthcare & Pharmaceuticals",
+      "Banking & Finance",
+      "Retail & E-commerce",
+      "Manufacturing",
+      "Education & EdTech",
+      "Telecommunications",
+      "FMCG",
+      "Logistics & Supply Chain",
+      "Hospitality & Travel",
+      "Real Estate & Construction",
+      "Energy & Utilities",
+      "Automotive",
+      "Media & Entertainment",
+      "Consulting & Professional Services",
+      "Legal & Compliance",
+      "Human Resources",
+      "Agriculture & Food Processing",
+      "Government & Public Sector",
+      "Non-profit & NGOs",
+      "Research & Development",
+      "Aerospace & Defense",
+      "Chemicals",
+      "Design & UX",
+      "Sales & Business Development"
+    ];
+
+    // India states + UTs (sample, can be extended)
+    const states = [
+      "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+      "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
+      "Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur",
+      "Meghalaya","Mizoram","Nagaland","Odisha","Punjab",
+      "Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
+      "Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Puducherry"
+    ];
+
+    // sample cities by state — expand this mapping for full dataset
+    const citiesByState = {
+      "Andhra Pradesh": ["Vijayawada","Visakhapatnam","Guntur","Rajahmundry"],
+      "Karnataka": ["Bengaluru","Mysore","Mangalore","Hubli"],
+      "Tamil Nadu": ["Chennai","Coimbatore","Madurai","Tiruchirappalli"],
+      "Telangana": ["Hyderabad","Warangal","Nizamabad"],
+      "Maharashtra": ["Mumbai","Pune","Nagpur","Nashik"],
+      "Delhi": ["New Delhi","Dwarka","Rohini","Saket"],
+      "West Bengal": ["Kolkata","Howrah","Durgapur","Siliguri"],
+      "Uttar Pradesh": ["Lucknow","Kanpur","Noida","Agra"],
+      "Kerala": ["Thiruvananthapuram","Kochi","Kozhikode","Thrissur"],
+      "Gujarat": ["Ahmedabad","Surat","Vadodara","Rajkot"]
+      // add more state → city arrays as required
+    };
+
+    // roles: provide a large list (A→Z). Expand as needed; below are many common roles.
+    const roles = [
+      "Accountant","Accounts Payable Clerk","Accounts Receivable Clerk","Actuarial Analyst",
+      "Administrative Assistant","AI/ML Engineer","Animator","App Developer","Application Support",
+      "Art Director","Assistant Manager","Auditor","Backend Developer","Biochemist",
+      "Business Analyst","Business Development Manager","Buyer","Call Center Executive",
+      "Cardiology Nurse","CFO","Chemist","Chief Marketing Officer","Civil Engineer",
+      "Cloud Engineer","Content Writer","Copywriter","Counselor","Credit Analyst",
+      "Customer Success Manager","Data Analyst","Data Engineer","Data Scientist","Desktop Support",
+      "DevOps Engineer","Digital Marketing Manager","Director of Operations","EHS Manager",
+      "Electrical Engineer","Embedded Systems Engineer","Endocrinologist","Engineer Manager",
+      "Executive Assistant","Executive Chef","Fashion Designer","Finance Manager","Full Stack Developer",
+      "Game Developer","Graphic Designer","Growth Hacker","HR Manager","Healthcare Administrator",
+      "Helpdesk Technician","Hospital Administrator","Hospitality Manager","HRBP","Implementation Engineer",
+      "Industrial Engineer","Information Security Analyst","Information Technology Manager",
+      "Insurance Underwriter","Internal Auditor","Investment Analyst","Java Developer",
+      "Javascript Developer","Judge (Legal)","Lab Technician","Logistics Coordinator",
+      "Machine Learning Engineer","Maintenance Engineer","Marketing Executive","Mechanical Engineer",
+      "Medical Officer","Network Engineer","Nurse","Nutritionist","Occupational Therapist",
+      "Office Administrator","Operations Manager","Packer","Payroll Specialist","Perl Developer",
+      "Pharmacist","Physician","Physiotherapist","PL/SQL Developer","Product Designer",
+      "Product Manager","Program Manager","Project Manager","Public Relations Specialist",
+      "Quality Analyst","Quality Engineer","Quantitative Analyst","React Developer",
+      "Recruiter","Registered Nurse","Research Associate","Retail Manager","Risk Analyst",
+      "Sales Executive","Sales Manager","SAP Consultant","Scrum Master","Security Guard",
+      "SEO Specialist","Social Media Manager","Software Architect","Software Engineer",
+      "Solution Architect","Speech Therapist","Staff Nurse","Store Manager","Supply Chain Analyst",
+      "Systems Administrator","Technical Lead","Technical Support Engineer","Teacher","Telecaller",
+      "Test Engineer","UI Designer","UI/UX Designer","Unity Developer","Unix Administrator",
+      "User Researcher","Veterinarian","Video Editor","Visual Designer","Voice Artist",
+      "Warehouse Manager","Web Developer","Wordpress Developer","XML Developer","Zoho Developer",
+      "Android Developer","iOS Developer","Blockchain Developer","Business Systems Analyst",
+      "CRM Manager","Customer Service Representative","Digital Analyst","Ecommerce Manager",
+      "Event Manager","Field Sales Executive","Fleet Manager","Fleet Supervisor","Food Technologist",
+      "Forex Dealer","FP&A Analyst","Fund Accountant","Geotechnical Engineer","GIS Analyst",
+      "Grant Manager","HSE Officer","Identity & Access Manager","Investment Banker",
+      "Java Architect","Kotlin Developer","Laboratory Manager","Learning & Development Manager",
+      "Linux Administrator","Logistics Manager","Machine Operator","M&E Engineer",
+      "Medical Coder","Mortgage Advisor","Network Administrator","Nurse Educator","Occupational Health Nurse",
+      "Optometrist","Payments Analyst","Phlebotomist","Plant Head","Portfolio Manager",
+      "Procurement Manager","Product Analyst","Program Analyst","Property Manager","Public Health Nurse",
+      "Purchasing Manager","Radiologist","Real Estate Agent","Recruitment Coordinator","SAP FI Consultant",
+      "Security Analyst","Service Delivery Manager","SharePoint Developer","Site Engineer","Site Manager",
+      "Speech-Language Pathologist","Store Keeper","Strategy Manager","Supply Planner","Sustainability Analyst",
+      "Talent Acquisition Specialist","Tax Consultant","Telemetry Engineer","Test Manager","Tooling Engineer",
+      "Trade Marketing Manager","Treasury Analyst","UX Researcher","Video Producer","Voice Engineer"
+      // You can expand to 200+ by repeating categories or adding more role names
+    ];
+
+    // Sample companies dataset (small demo). In full version replace with large dataset or load JSON.
+    const sampleCompanies = [
+      { name:"InnoTech Solutions", sector:"Information Technology & Software", state:"Karnataka", city:"Bengaluru", roles:["Full Stack Developer","DevOps Engineer"], careers:"https://innotech.example/careers" },
+      { name:"MediCare Labs", sector:"Healthcare & Pharmaceuticals", state:"Maharashtra", city:"Mumbai", roles:["Pharmacist","Lab Technician"], careers:"https://medicare.example/careers" },
+      { name:"EduGrow", sector:"Education & EdTech", state:"Karnataka", city:"Bengaluru", roles:["Product Manager","Content Writer"], careers:"https://edugrow.example/careers" },
+      { name:"FarmFresh Foods", sector:"Agriculture & Food Processing", state:"Andhra Pradesh", city:"Vijayawada", roles:["Quality Analyst","Food Technologist"], careers:"https://farmfresh.example/careers" },
+      { name:"BuildRight Constructions", sector:"Real Estate & Construction", state:"Maharashtra", city:"Pune", roles:["Site Engineer","Project Manager"], careers:"https://buildright.example/careers" },
+      { name:"Green Logistics", sector:"Logistics & Supply Chain", state:"Gujarat", city:"Ahmedabad", roles:["Logistics Coordinator","Fleet Manager"], careers:"https://greenlog.example/careers" }
+    ];
+
+    /* ----------------------------
+       Utility functions
+       ---------------------------- */
+
+    // Helper: create suggestion item element
+    function makeSuggestion(text) {
+      const el = document.createElement('div');
+      el.className = 'suggestion-item';
+      el.textContent = text;
+      return el;
+    }
+
+    // Case-insensitive includes
+    function containsIgnoreCase(str, q){
+      return str.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+    }
+
+    // Sort roles A→Z
+    roles.sort((a,b)=>a.localeCompare(b));
+
+    /* ----------------------------
+       UI element references
+       ---------------------------- */
+    const sectorInput = document.getElementById('sectorInput');
+    const sectorSuggestions = document.getElementById('sectorSuggestions');
+    const sectorWrap = document.getElementById('sectorWrap');
+
+    const stateInput = document.getElementById('stateInput');
+    const stateWrap = document.getElementById('stateWrap');
+    const stateSuggestions = null; // we will use inline suggestions from code
+    const selectedStatesEl = document.getElementById('selectedStates');
+    const stateCountEl = document.getElementById('stateCount');
+
+    const cityInput = document.getElementById('cityInput');
+    const citySuggestions = document.getElementById('citySuggestions');
+    const selectedCitiesEl = document.getElementById('selectedCities');
+
+    const roleInput = document.getElementById('roleInput');
+    const roleSuggestions = document.getElementById('roleSuggestions');
+    const selectedRolesEl = document.getElementById('selectedRoles');
+
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultsEl = document.getElementById('results');
+    const noResultsEl = document.getElementById('noResu
