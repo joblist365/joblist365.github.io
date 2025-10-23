@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobPatra – Explore Careers in India</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f9ff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    header {
+      text-align: center;
+      background-color: #1565c0;
+      color: #fff;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .note {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    select:focus, input:focus {
+      border-color: #1565c0;
+      outline: none;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    .ad-banner {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .ad-banner img {
+      width: 100%;
+      max-width: 468px;
+      border-radius: 8px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      padding: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>💼 JobPatra</header>
+
+  <div class="container">
+    <div class="note">
+      Some companies post openings only on their official career pages. Visit company websites directly if jobs aren’t listed elsewhere.
+    </div>
+
+    <h2>Search Career Opportunities</h2>
+
+    <label for="sector">Select Sector</label>
+    <select id="sector">
+      <option value="">Select or type sector</option>
+      <option value="Information Technology">Information Technology</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="Manufacturing">Manufacturing</option>
+      <option value="Finance">Finance</option>
+      <option value="Education">Education</option>
+    </select>
+
+    <label for="state">Select State</label>
+    <select id="state" onchange="updateCities()">
+      <option value="">Select State</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Delhi">Delhi</option>
+    </select>
+
+    <label for="city">Select City</label>
+    <select id="city">
+      <option value="">Select City</option>
+    </select>
+
+    <label for="role">Select Role (Optional)</label>
+    <select id="role">
+      <option value="">Select Role (Optional)</option>
+      <option value="Software Engineer">Software Engineer</option>
+      <option value="Data Analyst">Data Analyst</option>
+      <option value="Accountant">Accountant</option>
+      <option value="HR Manager">HR Manager</option>
+      <option value="Medical Coder">Medical Coder</option>
+    </select>
+
+    <button onclick="searchJobs()">🔍 Search</button>
+
+    <div class="ad-banner">
+      <img src="https://via.placeholder.com/468x60.png?text=Your+Ad+Here" alt="Ad Banner">
+    </div>
+  </div>
+
+  <footer>© 2025 JobPatra. All rights reserved.</footer>
+
+  <script>
+    const cityOptions = {
+      "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam", "Guntur"],
+      "Karnataka": ["Bangalore", "Mysore", "Mangalore"],
+      "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
+      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+      "Delhi": ["New Delhi", "Dwarka", "Saket"]
+    };
+
+    function updateCities() {
+      const state = document.getElementById('state').value;
+      const citySelect = document.getElementById('city');
+      citySelect.innerHTML = '<option value="">Select City</option>';
+
+      if (state && cityOptions[state]) {
+        cityOptions[state].forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          option.textContent = city;
+          citySelect.appendChild(option);
+        });
+      }
+    }
+
+    function searchJobs() {
+      const sector = document.getElementById('sector').value;
+      const state = document.getElementById('state').value;
+      const city = document.getElementById('city').value;
+      const role = document.getElementById('role').value;
+
+      if (!sector) {
+        alert("Please select a sector first.");
+        return;
+      }
+
+      alert(`Searching ${sector} jobs${state ? ' in ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
+    }
+
+    // ✅ Make all dropdowns typeable and selectable (no design changes)
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("select").forEach(select => {
+        select.addEventListener("input", function(e) {
+          const search = e.target.value.toLowerCase();
+          Array.from(select.options).forEach(opt => {
+            opt.hidden = !opt.text.toLowerCase().includes(search);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
