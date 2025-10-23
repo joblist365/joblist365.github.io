@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobPatra – Search Results</title>
+  <style>
+    /* === STRICT DESIGN: colors, spacing, fonts unchanged === */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f9ff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    header {
+      text-align: center;
+      background-color: #1565c0;
+      color: #fff;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .note {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      margin: 15px auto;
+      line-height: 1.5;
+      max-width: 700px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .company-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f8fbff;
+      transition: 0.2s;
+      display: block;
+    }
+
+    .company-card.favorite-card {
+      border-color: #e91e63;
+      background: #fff0f4;
+    }
+
+    .company-card.dimmed {
+      opacity: 0.45;
+      filter: grayscale(100%);
+    }
+
+    .company-card:hover {
+      background: #eaf3ff;
+      transform: translateY(-2px);
+    }
+
+    .company-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .company-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0d47a1;
+    }
+
+    .company-info {
+      margin-top: 8px;
+      color: #333;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .linkedin { background-color: #0a66c2; }
+    .career { background-color: #1976d2; }
+    .fav-btn { background-color: #e91e63; padding: 8px 10px; font-size: 1.1rem; }
+    .fav-btn.active { background-color: #c2185b; }
+    .na-btn { background-color: #9e9e9e; padding: 8px 10px; font-size: 1.1rem; }
+
+    .meta {
+      color: #555;
+      font-size: 0.92rem;
+      margin-top: 6px;
+    }
+
+    .counts {
+      text-align: right;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      padding: 20px;
+      margin-top: 10px;
+    }
+
+    .top-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    @media (max-width:640px){
+      .top-row { flex-direction: column; align-items: stretch; }
+      .counts { text-align: left; margin-top:8px; }
+    }
+  </style>
+</head>
+<body>
+  <header>💼 JobPatra</header>
+
+  <div class="note">Results (favorites always shown first). Use back to change filters.</div>
+
+  <div class="container">
+    <div class="top-row">
+      <div style="font-weight:700; color:#0d47a1">Matching Companies</div>
+      <div class="counts" id="counts">Loading...</div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <footer>© 2025 JobPatra. All rights reserved.</footer>
+
+  <script>
+  // -------------------------
+  // Helper: read URL params
+  // -------------------------
+  function getParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name) || "";
+  }
+
+  const filterSector = getParam('sector');
+  const filterState  = getParam('state');
+  const filterCity   = getParam('city');
+  const filterRole   = getParam('role');
+
+  // -------------------------
+  // Try fetch data.json, fallback to sample inline companies
+  // data.json expected format:
+  // {
+  //   "Karnataka": [
+  //     { "company":"Infosys", "sector":"Information Technology", "city":"Bangalore", "roles":["Software Engineer","Data Analyst"], "linkedin":"...", "career":"..." }
+  //   ],
+  //   ...
+  // }
+  // -------------------------
+  async function loadCompanies() {
+    try {
+      const r = await fetch('data.json', {cache: "no-store"});
+      if (!r.ok) throw new Error('no data.json');
+      const json = await r.json();
+      // flatten to array
+      const arr = [];
+      Object.keys(json).forEach(state=>{
+        (json[state]||[]).forEach(item=>{
+          // normalize roles (take first if array)
+          const roles = item.roles || (item.role ? [item.role] : []);
+          arr.push({
+            name: item.company || item.name,
+            sector: item.sector || "",
+            state: state,
+            city: item.city || item.location || "",
+            roles: roles,
+            linkedin: item.linkedin || item.linkedin_url || item.linkedinUrl || "",
+            career: item.website || item.career || item.career_page || ""
+          });
+        });
+      });
+      return arr;
+    } catch (e) {
+      // fallback sample
+      return [
+        { name: "Infosys", sector: "Information Technology", state: "Karnataka", city: "Bangalore", roles: ["Software Engineer","Data Analyst"], linkedin: "https://www.linkedin.com/company/infosys", career: "https://www.infosys.com/careers" },
+        { name: "TCS", sector: "Information Technology", state: "Maharashtra", city: "Mumbai", roles: ["Data Analyst","Software Engineer"], linkedin: "https://www.linkedin.com/company/tata-consultancy-services", career: "https://www.tcs.com/careers" },
+        { name: "Wipro", sector: "Information Technology", state: "Andhra Pradesh", city: "Visakhapatnam", roles: ["Software Engineer"], linkedin: "https://www.linkedin.com/company/wipro", career: "https://careers.wipro.com" },
+        { name: "Apollo Hospitals", sector: "Healthcare", state: "Tamil Nadu", city: "Chennai", roles: ["Medical Coder"], linkedin: "https://www.linkedin.com/company/apollo-hospitals", career: "https://www.apollohospitals.com/careers" },
+        { name: "HDFC Bank", sector: "Finance", state: "Delhi", city: "New Delhi", roles: ["Accountant"], linkedin: "https://www.linkedin.com/company/hdfc-bank", career: "https://www.hdfcbank.com/careers" }
+      ];
+    }
+  }
+
+  // -------------------------
+  // localStorage keys
+  // -------------------------
+  const LS_FAV = 'jobpatra_favorites_v1';
+  const LS_NA  = 'jobpatra_not_interested_v1';
+
+  function loadLocal(key){ try { return JSON.parse(localStorage.getItem(key)||"[]"); } catch(e){ return []; } }
+  function saveLocal(key, arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+
+  // -------------------------
+  // Render logic
+  // -------------------------
+  (async function main(){
+    const resultsDiv = document.getElementById('results');
+    const countsEl = document.getElementById('counts');
+
+    let companies = await loadCompanies();
+    // unify roles as array
+    companies = companies.map(c=>{
+      return {
+        name: String(c.name||"").trim(),
+        sector: String(c.sector||"").trim(),
+        state: String(c.state||"").trim(),
+        city: String(c.city||"").trim(),
+        roles: Array.isArray(c.roles) ? c.roles.map(r=>String(r)) : (c.roles? [String(c.roles)] : []),
+        linkedin: c.linkedin || "",
+        career: c.career || ""
+      };
+    });
+
+    // load saved prefs
+    let favorites = loadLocal(LS_FAV);
+    let notInterested = loadLocal(LS_NA);
+
+    // helper: check match by filters
+    function matchesFilters(company) {
+      // if user selected only sector etc: behavior described earlier
+      if (filterSector && company.sector !== filterSector) return false;
+      if (filterState  && company.state  !== filterState)  return false;
+      if (filterCity   && company.city   !== filterCity)   return false;
+      if (filterRole) {
+        // role filter: check if any role equals filterRole (exact match) or includes text
+        const found = company.roles.some(r => r.toLowerCase() === filterRole.toLowerCase() || r.toLowerCase().includes(filterRole.toLowerCase()));
+        if (!found) return false;
+      }
+      return true;
+    }
+
+    // Build three buckets:
+    // 1) favorites (always first) — favorites take priority even if they don't match current filters
+    // 2) matched normal companies (not favorite, not notInterested)
+    // 3) notInterested companies (last, dimmed)
+    const favSet = new Set(favorites); // names
+    const naSet  = new Set(notInterested);
+
+    const favoritesList = [];
+    const matchedNormal = [];
+    const naList = [];
+
+    // Create a map by company name for stable dedupe
+    const nameSeen = new Set();
+
+    // First pass: favorites (keep order of favorites array)
+    favorites.forEach(fname => {
+      const found = companies.find(c => c.name === fname);
+      if (found && !nameSeen.has(found.name)) {
+        favoritesList.push(found);
+        nameSeen.add(found.name);
+      }
+    });
+
+    // Second pass: go through all companies and assign to matchedNormal or naList
+    companies.forEach(c => {
+      if (nameSeen.has(c.name)) return; // already placed as favorite
+      const isNA = naSet.has(c.name);
+      const isMatch = matchesFilters(c);
+      if (isMatch && !isNA) {
+        matchedNormal.push(c);
+        nameSeen.add(c.name);
+      } else {
+        // collect NA candidates (we will show them last, dimmed)
+        if (isNA) {
+          naList.push(c);
+          nameSeen.add(c.name);
+        } else {
+          // If filters are empty (no filter at all) we show all non-favorites before NA
+          // If filters are present and company doesn't match, we skip it (unless it's favorite)
+          if (!filterSector && !filterState && !filterCity && !filterRole) {
+            matchedNormal.push(c);
+            nameSeen.add(c.name);
+          }
+        }
+      }
+    });
+
+    // Combine final list with favorites first
+    const finalList = [...favoritesList, ...matchedNormal, ...naList];
+
+    // counts
+    countsEl.textContent = `${finalList.length} shown • ${favoritesList.length} favorite`;
+
+    // render cards
+    finalList.forEach(c => {
+      const isFav = favSet.has(c.name);
+      const isNA  = naSet.has(c.name);
+
+      const card = document.createElement('div');
+      card.className = 'company-card' + (isFav ? ' favorite-card' : '') + (isNA && !isFav ? ' dimmed' : '');
+
+      // roles displayed as comma-separated short
+      const rolesText = (c.roles || []).slice(0,3).join(', ');
+
+      card.innerHTML = `
+        <div class="company-header">
+          <div class="company-name">${escapeHtml(c.name)}</div>
+          <div style="font-size:0.92rem;color:#666">${escapeHtml(c.city)}, ${escapeHtml(c.state)}</div>
+        </div>
+        <div class="company-info meta"><strong>Role:</strong> ${escapeHtml(rolesText || "-")}</div>
+
+        <div class="buttons">
+          <a class="btn linkedin" href="${c.linkedin || '#'}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a class="btn career" href="${c.career || '#'}" target="_blank" rel="noopener noreferrer">Career Page</a>
+          <button class="btn fav-btn" title="Favorite">${isFav ? '❤️' : '🤍'}</button>
+          <button class="btn na-btn" title="Not interested">🚫</button>
+        </div>
+      `;
+
+      // favorite & not-interested event handlers
+      const favBtn = card.querySelector('.fav-btn');
+      const naBtn  = card.querySelector('.na-btn');
+
+      favBtn.addEventListener('click', () => {
+        // toggle favorite: favorites always top -> update localStorage then re-render
+        if (favSet.has(c.name)) {
+          // remove
+          favorites = favorites.filter(x => x !== c.name);
+        } else {
+          favorites.push(c.name);
+        }
+        saveLocal(LS_FAV, favorites);
+        // re-render to respect favorites-first rule
+        rerender();
+      });
+
+      naBtn.addEventListener('click', () => {
+        // mark not interested (if not favorite)
+        if (!naSet.has(c.name)) {
+          notInterested.push(c.name);
+        } else {
+          // unmark if already present
+          notInterested = notInterested.filter(x => x !== c.name);
+        }
+        saveLocal(LS_NA, notInterested);
+        rerender();
+      });
+
+      resultsDiv.appendChild(card);
+    });
+
+    // -------------------------
+    // Rerender helper to re-run the same flow (keeps UI consistent)
+    // -------------------------
+    function rerender() {
+      // clear and recall main flow
+      resultsDiv.innerHTML = '';
+      // reload sets from storage (in case changed)
+      favorites = loadLocal(LS_FAV);
+      notInterested = loadLocal(LS_NA);
+      // recompute sets and lists
+      // (call main logic again by building finalList again quickly)
+      const favSet2 = new Set(favorites);
+      const naSet2 = new Set(notInterested);
+      const seen = new Set();
+      const favs = [];
+      favorites.forEach(fname => {
+        const found = companies.find(cc => cc.name === fname);
+        if (found && !seen.has(found.name)) { favs.push(found); seen.add(found.name); }
+      });
+      const matched = [];
+      const nas = [];
+
+      companies.forEach(cc => {
+        if (seen.has(cc.name)) return;
+        const isNA = naSet2.has(cc.name);
+        const isMatch = matchesFilters(cc);
+        if (isMatch && !isNA) {
+          matched.push(cc); seen.add(cc.name);
+        } else {
+          if (isNA) { nas.push(cc); seen.add(cc.name); }
+          else {
+            if (!filterSector && !filterState && !filterCity && !filterRole) { matched.push(cc); seen.add(cc.name); }
+          }
+        }
+      });
+
+      const combined = [...favs, ...matched, ...nas];
+      countsEl.textContent = `${combined.length} shown • ${favs.length} favorite`;
+
+      combined.forEach(c => {
+        const isFav = favSet2.has(c.name);
+        const isNA  = naSet2.has(c.name);
+        const card = document.createElement('div');
+        card.className = 'company-card' + (isFav ? ' favorite-card' : '') + (isNA && !isFav ? ' dimmed' : '');
+        const rolesText = (c.roles || []).slice(0,3).join(', ');
+        card.innerHTML = `
+          <div class="company-header">
+            <div class="company-name">${escapeHtml(c.name)}</div>
+            <div style="font-size:0.92rem;color:#666">${escapeHtml(c.city)}, ${escapeHtml(c.state)}</div>
+          </div>
+          <div class="company-info meta"><strong>Role:</strong> ${escapeHtml(rolesText || "-")}</div>
+          <div class="buttons">
+            <a class="btn linkedin" href="${c.linkedin || '#'}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="btn career" href="${c.career || '#'}" target="_blank" rel="noopener noreferrer">Career Page</a>
+            <button class="btn fav-btn">${isFav ? '❤️' : '🤍'}</button>
+            <button class="btn na-btn">🚫</button>
+          </div>
+        `;
+        const favB = card.querySelector('.fav-btn');
+        const naB  = card.querySelector('.na-btn');
+        favB.addEventListener('click', () => {
+          if (favSet2.has(c.name)) { favorites = favorites.filter(x=>x!==c.name); } else { favorites.push(c.name); }
+          saveLocal(LS_FAV, favorites); rerender();
+        });
+        naB.addEventListener('click', () => {
+          if (!naSet2.has(c.name)) notInterested.push(c.name); else notInterested = notInterested.filter(x=>x!==c.name);
+          saveLocal(LS_NA, notInterested); rerender();
+        });
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    // Utility: escape HTML to avoid bad text rendering
+    function escapeHtml(s){
+      return String(s||"").replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    }
+
+  })(); // end main
+  </script>
+</body>
+</html>
