@@ -1,5 +1,268 @@
 {
   "Andhra Pradesh": [
+    {
+      "company": "Wipro",
+      "state": "Andhra Pradesh",
+      "city": "Visakhapatnam",
+      "roles": ["Software Engineer", "Data Analyst", "Support Engineer"],
+      "linkedin": "https://www.linkedin.com/company/wipro",
+      "career": "https://careers.wipro.com"
+    },
+    {
+      "company": "Tech Mahindra",
+      "state": "Andhra Pradesh",
+      "city": "Vijayawada",
+      "roles": ["Developer", "UI Designer", "Tester"],
+      "linkedin": "https://www.linkedin.com/company/techmahindra",
+      "career": "https://careers.techmahindra.com"
+    },
+    {
+      "company": "Amara Raja Batteries",
+      "state": "Andhra Pradesh",
+      "city": "Tirupati",
+      "roles": ["Production Engineer", "Quality Analyst", "Maintenance Supervisor"],
+      "linkedin": "https://www.linkedin.com/company/amararaja",
+      "career": "https://www.amararaja.com/careers"
+    },
+    {
+      "company": "Granules India",
+      "state": "Andhra Pradesh",
+      "city": "Hyderabad",
+      "roles": ["Pharmacist", "Lab Technician", "QC Analyst"],
+      "linkedin": "https://www.linkedin.com/company/granulesindia",
+      "career": "https://www.granulesindia.com/careers"
+    },
+    {
+      "company": "Dr. Reddy’s Laboratories",
+      "state": "Andhra Pradesh",
+      "city": "Hyderabad",
+      "roles": ["Chemist", "Research Associate", "Quality Control"],
+      "linkedin": "https://www.linkedin.com/company/dr-reddy's-laboratories",
+      "career": "https://careers.drreddys.com"
+    },
+    {
+      "company": "Andhra Bank",
+      "state": "Andhra Pradesh",
+      "city": "Vijayawada",
+      "roles": ["Clerk", "Branch Manager", "Accountant"],
+      "linkedin": "https://www.linkedin.com/company/andhra-bank",
+      "career": "https://www.andhrabank.in/english/careers.aspx"
+    },
+    {
+      "company": "Bharat Electronics Limited",
+      "state": "Andhra Pradesh",
+      "city": "Machilipatnam",
+      "roles": ["Electronics Engineer", "Technician", "Supervisor"],
+      "linkedin": "https://www.linkedin.com/company/bharat-electronics",
+      "career": "https://bel-india.in"
+    },
+    {
+      "company": "Reliance Jio",
+      "state": "Andhra Pradesh",
+      "city": "Vijayawada",
+      "roles": ["Network Engineer", "Sales Executive", "Customer Support"],
+      "linkedin": "https://www.linkedin.com/company/reliance-jio",
+      "career": "https://careers.jio.com"
+    },
+    {
+      "company": "NTPC Simhadri",
+      "state": "Andhra Pradesh",
+      "city": "Visakhapatnam",
+      "roles": ["Mechanical Engineer", "Electrical Engineer", "Safety Officer"],
+      "linkedin": "https://www.linkedin.com/company/ntpc-limited",
+      "career": "https://careers.ntpc.co.in"
+    },
+    {
+      "company": "Visakhapatnam Steel Plant",
+      "state": "Andhra Pradesh",
+      "city": "Visakhapatnam",
+      "roles": ["Mechanical Engineer", "Operator", "Production Assistant"],
+      "linkedin": "https://www.linkedin.com/company/rinl-vizag-steel",
+      "career": "https://www.vizagsteel.com/index.asp"
+    }
+  ],
+
+  "Karnataka": [
+    {
+      "company": "Infosys",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Software Engineer", "Systems Analyst", "Data Engineer"],
+      "linkedin": "https://www.linkedin.com/company/infosys",
+      "career": "https://www.infosys.com/careers"
+    },
+    {
+      "company": "Tata Consultancy Services",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Software Developer", "AI Engineer", "Tester"],
+      "linkedin": "https://www.linkedin.com/company/tata-consultancy-services",
+      "career": "https://www.tcs.com/careers"
+    },
+    {
+      "company": "Biocon",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Research Scientist", "Lab Technician", "Bioinformatics Analyst"],
+      "linkedin": "https://www.linkedin.com/company/biocon-limited",
+      "career": "https://careers.biocon.com"
+    },
+    {
+      "company": "Hindustan Aeronautics Limited",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Aerospace Engineer", "Technician", "Designer"],
+      "linkedin": "https://www.linkedin.com/company/hal-india",
+      "career": "https://hal-india.co.in"
+    },
+    {
+      "company": "Flipkart",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Data Analyst", "Logistics Manager", "Marketing Specialist"],
+      "linkedin": "https://www.linkedin.com/company/flipkart",
+      "career": "https://www.flipkartcareers.com"
+    },
+    {
+      "company": "IBM India",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Cloud Engineer", "Support Analyst", "Consultant"],
+      "linkedin": "https://www.linkedin.com/company/ibm",
+      "career": "https://www.ibm.com/in-en/employment"
+    },
+    {
+      "company": "Mindtree",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Developer", "QA Engineer", "Project Manager"],
+      "linkedin": "https://www.linkedin.com/company/mindtree",
+      "career": "https://www.mindtree.com/careers"
+    },
+    {
+      "company": "Cognizant",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Software Engineer", "Business Analyst", "HR Executive"],
+      "linkedin": "https://www.linkedin.com/company/cognizant",
+      "career": "https://careers.cognizant.com"
+    },
+    {
+      "company": "Bharat Electronics Limited",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Hardware Engineer", "Testing Engineer", "Production Supervisor"],
+      "linkedin": "https://www.linkedin.com/company/bharat-electronics",
+      "career": "https://bel-india.in"
+    },
+    {
+      "company": "Mphasis",
+      "state": "Karnataka",
+      "city": "Bangalore",
+      "roles": ["Software Engineer", "Support Specialist", "Systems Administrator"],
+      "linkedin": "https://www.linkedin.com/company/mphasis",
+      "career": "https://careers.mphasis.com"
+    }
+  ],
+
+  "Maharashtra": [
+    {
+      "company": "HDFC Bank",
+      "state": "Maharashtra",
+      "city": "Mumbai",
+      "roles": ["Accountant", "Loan Officer", "Relationship Manager"],
+      "linkedin": "https://www.linkedin.com/company/hdfc-bank",
+      "career": "https://www.hdfcbank.com/careers"
+    },
+    {
+      "company": "Reliance Industries Limited",
+      "state": "Maharashtra",
+      "city": "Mumbai",
+      "roles": ["Petroleum Engineer", "Marketing Analyst", "Sales Executive"],
+      "linkedin": "https://www.linkedin.com/company/relianceindustries",
+      "career": "https://www.ril.com/careers"
+    },
+    {
+      "company": "Tata Motors",
+      "state": "Maharashtra",
+      "city": "Pune",
+      "roles": ["Mechanical Engineer", "Design Engineer", "QA Analyst"],
+      "linkedin": "https://www.linkedin.com/company/tata-motors",
+      "career": "https://careers.tatamotors.com"
+    },
+    {
+      "company": "Mahindra & Mahindra",
+      "state": "Maharashtra",
+      "city": "Mumbai",
+      "roles": ["Automobile Engineer", "Marketing Specialist", "Sales Officer"],
+      "linkedin": "https://www.linkedin.com/company/mahindra-and-mahindra-ltd",
+      "career": "https://www.mahindra.com/careers"
+    },
+    {
+      "company": "Larsen & Toubro",
+      "state": "Maharashtra",
+      "city": "Mumbai",
+      "roles": ["Civil Engineer", "Electrical Engineer", "Site Supervisor"],
+      "linkedin": "https://www.linkedin.com/company/larsen-toubro",
+      "career": "https://www.larsentoubro.com/careers"
+    }
+  ],
+
+  "Tamil Nadu": [
+    {
+      "company": "TVS Motor Company",
+      "state": "Tamil Nadu",
+      "city": "Hosur",
+      "roles": ["Mechanical Engineer", "Design Engineer", "Quality Inspector"],
+      "linkedin": "https://www.linkedin.com/company/tvs-motor-company",
+      "career": "https://www.tvsmotor.com/careers"
+    },
+    {
+      "company": "Ashok Leyland",
+      "state": "Tamil Nadu",
+      "city": "Chennai",
+      "roles": ["Production Engineer", "Technician", "Quality Control"],
+      "linkedin": "https://www.linkedin.com/company/ashok-leyland",
+      "career": "https://www.ashokleyland.com/en/careers"
+    },
+    {
+      "company": "HCL Technologies",
+      "state": "Tamil Nadu",
+      "city": "Chennai",
+      "roles": ["Software Developer", "Systems Analyst", "Network Engineer"],
+      "linkedin": "https://www.linkedin.com/company/hcl-technologies",
+      "career": "https://www.hcltech.com/careers"
+    }
+  ],
+
+  "Delhi": [
+    {
+      "company": "Bharat Heavy Electricals Limited",
+      "state": "Delhi",
+      "city": "New Delhi",
+      "roles": ["Electrical Engineer", "Technician", "Supervisor"],
+      "linkedin": "https://www.linkedin.com/company/bharat-heavy-electricals-limited",
+      "career": "https://careers.bhel.in"
+    },
+    {
+      "company": "IndiGo Airlines",
+      "state": "Delhi",
+      "city": "New Delhi",
+      "roles": ["Cabin Crew", "Ground Staff", "Engineer"],
+      "linkedin": "https://www.linkedin.com/company/indigo-airlines",
+      "career": "https://www.goindigo.in/careers.html"
+    },
+    {
+      "company": "NDTV",
+      "state": "Delhi",
+      "city": "New Delhi",
+      "roles": ["Journalist", "Video Editor", "Anchor"],
+      "linkedin": "https://www.linkedin.com/company/ndtv",
+      "career": "https://www.ndtv.com/careers"
+    }
+  ]
+}{
+  "Andhra Pradesh": [
     {"company":"Wipro","state":"Andhra Pradesh","city":"Visakhapatnam","roles":["Software Engineer","Support Engineer","QA Analyst"],"linkedin":"https://www.linkedin.com/company/wipro","career":"https://careers.wipro.com"},
     {"company":"Tech Mahindra","state":"Andhra Pradesh","city":"Vijayawada","roles":["Developer","UI Designer","Tester"],"linkedin":"https://www.linkedin.com/company/techmahindra","career":"https://careers.techmahindra.com"},
     {"company":"Dr. Reddy's Laboratories","state":"Andhra Pradesh","city":"Hyderabad","roles":["Research Associate","Quality Control","Chemist"],"linkedin":"https://www.linkedin.com/company/dr-reddy's-laboratories","career":"https://careers.drreddys.com"},
