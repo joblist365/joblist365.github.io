@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobPatra - Explore Careers in India</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #ffffff;
+      color: #1e3a8a;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .message {
+      text-align: center;
+      background: #e0e7ff;
+      color: #1e40af;
+      padding: 12px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #c7d2fe;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #f8fafc;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    select {
+      padding: 10px;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      min-width: 180px;
+      background: #fff;
+      color: #1e3a8a;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .ad-banner {
+      text-align: center;
+      margin: 50px 0 20px 0;
+    }
+
+    .ad-banner img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      color: #475569;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>JobPatra</header>
+
+  <div class="message">
+    🌟 Some companies may not advertise jobs here. Visit their official career pages to apply directly — they’ll know you’re interested!
+  </div>
+
+  <div class="container">
+    <h2>Find Your Ideal Career</h2>
+
+    <div class="filters">
+      <!-- Sector -->
+      <select id="sector" required>
+        <option value="">Select Sector *</option>
+        <option>IT & Software</option>
+        <option>Healthcare & Pharma</option>
+        <option>Banking & Finance</option>
+        <option>Manufacturing</option>
+        <option>Education</option>
+        <option>Retail</option>
+        <option>Telecom</option>
+        <option>Transportation</option>
+        <option>Construction</option>
+        <option>Hospitality</option>
+        <option>Media & Entertainment</option>
+        <option>Government</option>
+      </select>
+
+      <!-- State -->
+      <select id="state" multiple>
+        <option disabled>Select State(s) (optional)</option>
+        <option>Andhra Pradesh</option>
+        <option>Karnataka</option>
+        <option>Tamil Nadu</option>
+        <option>Maharashtra</option>
+        <option>Delhi</option>
+        <option>Telangana</option>
+        <option>Gujarat</option>
+        <option>Kerala</option>
+        <option>West Bengal</option>
+        <option>Uttar Pradesh</option>
+      </select>
+
+      <!-- City -->
+      <select id="city" multiple>
+        <option disabled>Select City(s) (optional)</option>
+        <option>Bangalore</option>
+        <option>Hyderabad</option>
+        <option>Chennai</option>
+        <option>Mumbai</option>
+        <option>Pune</option>
+        <option>Delhi</option>
+        <option>Ahmedabad</option>
+        <option>Kochi</option>
+        <option>Kolkata</option>
+        <option>Lucknow</option>
+      </select>
+
+      <!-- Role -->
+      <select id="role">
+        <option value="">Select Role (optional)</option>
+        <option>Software Engineer</option>
+        <option>Web Developer</option>
+        <option>Data Analyst</option>
+        <option>Medical Coder</option>
+        <option>Sales Executive</option>
+        <option>Teacher</option>
+        <option>Manager</option>
+        <option>HR Executive</option>
+        <option>Finance Officer</option>
+        <option>Network Engineer</option>
+        <option>Support Associate</option>
+      </select>
+
+      <button onclick="searchJobs()">Search</button>
+    </div>
+
+    <!-- Ad Banner -->
+    <div class="ad-banner">
+      <img src="https://via.placeholder.com/728x90.png?text=Your+Ad+Here" alt="Ad Banner">
+    </div>
+  </div>
+
+  <footer>© 2025 JobPatra | Empowering Careers Across India</footer>
+
+  <script>
+    function searchJobs() {
+      const sector = document.getElementById("sector").value;
+      if (!sector) {
+        alert("Please select a sector to continue.");
+        return;
+      }
+      const states = Array.from(document.getElementById("state").selectedOptions).map(o => o.value);
+      const cities = Array.from(document.getElementById("city").selectedOptions).map(o => o.value);
+      const role = document.getElementById("role").value;
+
+      const params = new URLSearchParams({
+        sector,
+        states: states.join(","),
+        cities: cities.join(","),
+        role
+      }).toString();
+
+      window.location.href = `results.html?${params}`;
+    }
+  </script>
+</body>
+</html>
