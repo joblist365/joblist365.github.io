@@ -160,66 +160,86 @@
   </div>
 
   <footer>© 2025 JobPatra. All rights reserved.</footer>
+<script>
+  const cityOptions = {
+    "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam", "Guntur"],
+    "Karnataka": ["Bangalore", "Mysore", "Mangalore"],
+    "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
+    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+    "Delhi": ["New Delhi", "Dwarka", "Saket"]
+  };
 
-  <script>
-    const cityOptions = {
-      "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam", "Guntur"],
-      "Karnataka": ["Bangalore", "Mysore", "Mangalore"],
-      "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
-      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
-      "Delhi": ["New Delhi", "Dwarka", "Saket"]
-    };
+  function updateCities() {
+    const state = document.getElementById('state').value;
+    const citySelect = document.getElementById('city');
+    citySelect.innerHTML = '<option value="">Select City</option>';
 
-    function updateCities() {
-      const state = document.getElementById('state').value;
-      const citySelect = document.getElementById('city');
-      citySelect.innerHTML = '<option value="">Select City</option>';
+    if (state && cityOptions[state]) {
+      cityOptions[state].forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    }
+  }
 
-      if (state && cityOptions[state]) {
-        cityOptions[state].forEach(city => {
-          const option = document.createElement('option');
-          option.value = city;
-          option.textContent = city;
-          citySelect.appendChild(option);
-        });
-      }
+  function searchJobs() {
+    const sector = document.getElementById('sector').value;
+    const state = document.getElementById('state').value;
+    const city = document.getElementById('city').value;
+    const role = document.getElementById('role').value;
+
+    if (!sector) {
+      alert("Please select a sector first.");
+      return;
     }
 
-    function searchJobs() {
-      const sector = document.getElementById('sector').value;
-      const state = document.getElementById('state').value;
-      const city = document.getElementById('city').value;
-      const role = document.getElementById('role').value;
+    alert(`Searching ${sector} jobs${state ? ' in ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
+  }
 
-      if (!sector) {
-        alert("Please select a sector first.");
-        return;
-      }
+  // ✅ Typeable dropdowns (works on desktop & Android)
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("select").forEach(select => {
+      // Create hidden input for typing
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = select.options[0]?.text || "Type to search";
+      input.style.display = "none";
+      input.style.width = "100%";
+      input.style.marginBottom = "10px";
+      input.style.padding = "10px";
+      input.style.border = "1px solid #ccc";
+      input.style.borderRadius = "8px";
+      input.style.fontSize = "1rem";
 
-      alert(`Searching ${sector} jobs${state ? ' in ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
-    }
+      select.parentNode.insertBefore(input, select);
 
-    // ✅ Make dropdowns typeable (strict design preserved)
-    document.addEventListener("DOMContentLoaded", function() {
-      document.querySelectorAll("select").forEach(select => {
-        select.addEventListener("keyup", function(e) {
-          const search = e.target.value.toLowerCase();
-          const options = Array.from(select.options);
-          let found = false;
-          for (const opt of options) {
-            if (opt.text.toLowerCase().startsWith(search)) {
-              select.value = opt.value;
-              found = true;
-              break;
-            }
-          }
-          if (!found && search === "") {
-            select.selectedIndex = 0;
-          }
-        });
+      // Show input when select is focused
+      select.addEventListener("focus", () => {
+        select.style.display = "none";
+        input.style.display = "block";
+        input.focus();
+      });
+
+      // Hide input and set value back when done typing
+      input.addEventListener("blur", () => {
+        input.style.display = "none";
+        select.style.display = "block";
+      });
+
+      // Filter and auto-select options
+      input.addEventListener("input", e => {
+        const search = e.target.value.toLowerCase();
+        const match = Array.from(select.options).find(opt =>
+          opt.text.toLowerCase().startsWith(search)
+        );
+        if (match) {
+          select.value = match.value;
+        }
       });
     });
-  </script>
-
+  });
+</script>
 </body>
 </html>
