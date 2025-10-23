@@ -160,7 +160,7 @@
   </div>
 
   <footer>© 2025 JobPatra. All rights reserved.</footer>
-<script>
+  <script>
   const cityOptions = {
     "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam", "Guntur"],
     "Karnataka": ["Bangalore", "Mysore", "Mangalore"],
@@ -198,48 +198,48 @@
     alert(`Searching ${sector} jobs${state ? ' in ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
   }
 
-  // ✅ Typeable dropdowns (works on desktop & Android)
-  document.addEventListener("DOMContentLoaded", function() {
+  // ✅ Make all dropdowns typeable AND selectable
+  document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("select").forEach(select => {
-      // Create hidden input for typing
       const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = select.options[0]?.text || "Type to search";
-      input.style.display = "none";
-      input.style.width = "100%";
-      input.style.marginBottom = "10px";
-      input.style.padding = "10px";
-      input.style.border = "1px solid #ccc";
-      input.style.borderRadius = "8px";
-      input.style.fontSize = "1rem";
-
+      input.placeholder = select.options[0]?.text || "Type to search...";
+      input.style.cssText = `
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        font-size: 1rem;
+        box-sizing: border-box;
+      `;
       select.parentNode.insertBefore(input, select);
+      select.style.display = "none";
 
-      // Show input when select is focused
-      select.addEventListener("focus", () => {
-        select.style.display = "none";
-        input.style.display = "block";
-        input.focus();
-      });
-
-      // Hide input and set value back when done typing
-      input.addEventListener("blur", () => {
-        input.style.display = "none";
+      input.addEventListener("focus", () => {
         select.style.display = "block";
+        select.size = 5;
       });
 
-      // Filter and auto-select options
-      input.addEventListener("input", e => {
-        const search = e.target.value.toLowerCase();
-        const match = Array.from(select.options).find(opt =>
-          opt.text.toLowerCase().startsWith(search)
-        );
-        if (match) {
-          select.value = match.value;
+      select.addEventListener("change", () => {
+        input.value = select.value;
+        select.style.display = "none";
+      });
+
+      input.addEventListener("keyup", () => {
+        const search = input.value.toLowerCase();
+        Array.from(select.options).forEach(opt => {
+          opt.style.display = opt.text.toLowerCase().includes(search) ? "block" : "none";
+        });
+      });
+
+      document.addEventListener("click", e => {
+        if (!select.contains(e.target) && !input.contains(e.target)) {
+          select.style.display = "none";
         }
       });
     });
   });
-</script>
+  </script>
+
 </body>
 </html>
