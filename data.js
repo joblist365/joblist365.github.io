@@ -163,3 +163,5 @@ const andhraPradeshCompanies = [
     career: "#"
   }
 ];
+// ✅ Make the company list visible to results.html
+window.andhraPradeshCompanies = andhraPradeshCompanies;
