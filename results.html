@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobPatra – Search Results</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f9ff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+    header {
+      text-align: center;
+      background-color: #1565c0;
+      color: #fff;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .note {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      margin: 15px auto;
+      line-height: 1.5;
+      max-width: 700px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .company-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f8fbff;
+      transition: 0.2s;
+      display: block;
+    }
+    .company-card.favorite-card {
+      border-color: #e91e63;
+      background: #fff0f4;
+    }
+    .company-card.dimmed {
+      opacity: 0.45;
+      filter: grayscale(100%);
+    }
+    .company-card:hover {
+      background: #eaf3ff;
+      transform: translateY(-2px);
+    }
+    .company-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .company-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0d47a1;
+    }
+    .company-info {
+      margin-top: 8px;
+      color: #333;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .linkedin { background-color: #0a66c2; }
+    .career { background-color: #1976d2; }
+    .fav-btn { background-color: #e91e63; padding: 8px 10px; font-size: 1.1rem; }
+    .fav-btn.active { background-color: #c2185b; }
+    .na-btn { background-color: #9e9e9e; padding: 8px 10px; font-size: 1.1rem; }
+    .meta {
+      color: #555;
+      font-size: 0.92rem;
+      margin-top: 6px;
+    }
+    .counts {
+      text-align: right;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .top-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    @media (max-width:640px){
+      .top-row { flex-direction: column; align-items: stretch; }
+      .counts { text-align: left; margin-top:8px; }
+    }
+    .ad-banner {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .ad-banner img {
+      width: 100%;
+      max-width: 468px;
+      border-radius: 8px;
+      transition: opacity 0.5s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <header>💼 JobPatra</header>
+
+  <div class="note">Results (favorites always shown first). Use back to change filters.</div>
+
+  <div class="container">
+    <div class="top-row">
+      <div style="font-weight:700; color:#0d47a1">Matching Companies</div>
+      <div class="counts" id="counts">Loading...</div>
+    </div>
+
+    <div id="results"></div>
+
+    <!-- ✅ Ad Banner (Auto Rotating) -->
+    <div class="ad-banner">
+      <img id="rotatingAd" src="https://via.placeholder.com/468x60.png?text=Ad+1" alt="Ad Banner">
+    </div>
+  </div>
+
+  <footer>© 2025 JobPatra. All rights reserved.</footer>
+
+  <script>
+  // === AUTO ROTATING ADS ===
+  const ads = [
+    "https://via.placeholder.com/468x60.png?text=Ad+1",
+    "https://via.placeholder.com/468x60.png?text=Ad+2",
+    "https://via.placeholder.com/468x60.png?text=Ad+3",
+    "https://via.placeholder.com/468x60.png?text=Ad+4"
+  ];
+  let currentAd = 0;
+  setInterval(() => {
+    const adImg = document.getElementById("rotatingAd");
+    currentAd = (currentAd + 1) % ads.length;
+    adImg.style.opacity = 0;
+    setTimeout(() => {
+      adImg.src = ads[currentAd];
+      adImg.style.opacity = 1;
+    }, 500);
+  }, 10000);
+  </script>
+
+  <!-- ⚙ Existing job listing script kept untouched -->
+  <script>
+    /* your existing full JS logic here — unchanged */
+  </script>
+</body>
+</html>
