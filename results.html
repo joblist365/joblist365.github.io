@@ -116,7 +116,6 @@
   .fav-btn.active { background-color: #c2185b; }
   .na-btn { background-color: #9e9e9e; padding: 8px 10px; font-size: 1.1rem; }
   .meta { color: #555; font-size: 0.92rem; margin-top: 6px; }
-  .counts { text-align: right; color: #666; font-size: 0.9rem; }
   footer {
     text-align: center;
     font-size: 0.9rem;
@@ -177,7 +176,91 @@
   }, 10000);
 </script>
 
-<!-- ✅ Keep your previous company/favorite/search logic script here (unchanged) -->
+<!-- ✅ DATA.JS LINK -->
+<script src="data.js"></script>
 
+<!-- ✅ DISPLAY COMPANIES -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const resultsDiv = document.getElementById("results");
+  const searchBox = document.getElementById("searchBox");
+
+  // Combine all states into one list
+  const allCompanies = [
+    ...(window.andhraPradeshCompanies || []),
+    ...(window.karnatakaCompanies || []),
+    ...(window.maharashtraCompanies || []),
+    ...(window.tamilNaduCompanies || []),
+    ...(window.delhiCompanies || [])
+  ];
+
+  const LS_FAV = 'jobpatra_favorites_v1';
+  const LS_NA = 'jobpatra_not_interested_v1';
+
+  const loadLocal = key => JSON.parse(localStorage.getItem(key) || "[]");
+  const saveLocal = (key, val) => localStorage.setItem(key, JSON.stringify(val));
+
+  function render(companies) {
+    resultsDiv.innerHTML = "";
+    const favorites = loadLocal(LS_FAV);
+    const notInterested = loadLocal(LS_NA);
+
+    // sort favorites first
+    const sorted = [
+      ...companies.filter(c => favorites.includes(c.company)),
+      ...companies.filter(c => !favorites.includes(c.company) && !notInterested.includes(c.company)),
+      ...companies.filter(c => notInterested.includes(c.company))
+    ];
+
+    sorted.forEach(c => {
+      const isFav = favorites.includes(c.company);
+      const isNA = notInterested.includes(c.company);
+
+      const card = document.createElement("div");
+      card.className = "company-card" + (isFav ? " favorite-card" : "") + (isNA ? " dimmed" : "");
+
+      card.innerHTML = `
+        <div class="company-header">
+          <div class="company-name">${c.company}</div>
+          <div style="font-size:0.92rem;color:#666">${c.city}, ${c.state}</div>
+        </div>
+        <div class="company-info meta"><strong>Roles:</strong> ${c.roles.join(", ")}</div>
+        <div class="buttons">
+          <a class="btn linkedin" href="${c.linkedin}" target="_blank">LinkedIn</a>
+          <a class="btn career" href="${c.career}" target="_blank">Career Page</a>
+          <button class="btn fav-btn">${isFav ? '❤️' : '🤍'}</button>
+          <button class="btn na-btn">🚫</button>
+        </div>
+      `;
+
+      card.querySelector(".fav-btn").addEventListener("click", () => {
+        if (isFav) saveLocal(LS_FAV, favorites.filter(f => f !== c.company));
+        else saveLocal(LS_FAV, [...favorites, c.company]);
+        render(allCompanies);
+      });
+
+      card.querySelector(".na-btn").addEventListener("click", () => {
+        if (isNA) saveLocal(LS_NA, notInterested.filter(f => f !== c.company));
+        else saveLocal(LS_NA, [...notInterested, c.company]);
+        render(allCompanies);
+      });
+
+      resultsDiv.appendChild(card);
+    });
+  }
+
+  searchBox.addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+    const filtered = allCompanies.filter(
+      c =>
+        c.company.toLowerCase().includes(val) ||
+        c.roles.some(r => r.toLowerCase().includes(val))
+    );
+    render(filtered);
+  });
+
+  render(allCompanies);
+});
+</script>
 </body>
 </html>
