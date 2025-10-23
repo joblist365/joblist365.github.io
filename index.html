@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobPatra – Explore Careers in India</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f9ff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    header {
+      text-align: center;
+      background-color: #1565c0;
+      color: #fff;
+      padding: 20px;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      font-size: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    .ad-banner {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .ad-banner img {
+      width: 100%;
+      max-width: 468px;
+      border-radius: 8px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      padding: 20px;
+    }
+
+    .note {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>💼 JobPatra</header>
+
+  <div class="container">
+    <div class="note">
+      Some companies post jobs only on their own career pages. Visit company sites directly to apply.
+    </div>
+
+    <h2>Find Companies & Career Roles</h2>
+
+    <label for="sector">Select Sector</label>
+    <input list="sectors" id="sector" name="sector" placeholder="Type or choose a sector">
+    <datalist id="sectors">
+      <option value="Information Technology">
+      <option value="Healthcare">
+      <option value="Manufacturing">
+      <option value="Finance">
+      <option value="Education">
+    </datalist>
+
+    <label for="state">Select State</label>
+    <input list="states" id="state" name="state" placeholder="Type or choose state">
+    <datalist id="states">
+      <option value="Andhra Pradesh">
+      <option value="Karnataka">
+      <option value="Maharashtra">
+      <option value="Delhi">
+      <option value="Tamil Nadu">
+    </datalist>
+
+    <label for="city">Select City</label>
+    <input list="cities" id="city" name="city" placeholder="Type or choose city">
+    <datalist id="cities">
+      <option value="Hyderabad">
+      <option value="Bangalore">
+      <option value="Mumbai">
+      <option value="Chennai">
+      <option value="Delhi">
+    </datalist>
+
+    <label for="role">Select Role (Optional)</label>
+    <input list="roles" id="role" name="role" placeholder="Type or choose a role">
+    <datalist id="roles">
+      <option value="Software Engineer">
+      <option value="Data Analyst">
+      <option value="Accountant">
+      <option value="HR Manager">
+      <option value="Medical Coder">
+    </datalist>
+
+    <button onclick="searchJobs()">🔍 Search</button>
+
+    <!-- ✅ Ad Banner -->
+    <div class="ad-banner">
+      <img src="https://via.placeholder.com/468x60.png?text=Your+Ad+Here" alt="Ad Banner">
+    </div>
+  </div>
+
+  <footer>© 2025 JobPatra. All rights reserved.</footer>
+
+  <script>
+    function searchJobs() {
+      const sector = document.getElementById('sector').value;
+      const state = document.getElementById('state').value;
+      const city = document.getElementById('city').value;
+      const role = document.getElementById('role').value;
+
+      if (!sector) {
+        alert("Please select a sector.");
+        return;
+      }
+
+      alert(`Searching jobs in ${sector}${state ? ', ' + state : ''}${city ? ', ' + city : ''}${role ? ' for ' + role : ''}.`);
+      // Later: window.location.href = "results.html";
+    }
+  </script>
+</body>
+</html>
