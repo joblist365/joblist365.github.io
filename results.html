@@ -110,7 +110,16 @@ window.addEventListener("load", () => {
   ];
   for (const key in window)
   if (key.endsWith("Companies")) allCompanies.push(...(window[key] || []));
-
+// ✅ Cache data for faster reloads
+if (!localStorage.getItem("jobpatra_data")) {
+  localStorage.setItem("jobpatra_data", JSON.stringify(allCompanies));
+} else {
+  const cached = JSON.parse(localStorage.getItem("jobpatra_data"));
+  if (cached.length > allCompanies.length) {
+    allCompanies.length = 0;
+    allCompanies.push(...cached);
+  }
+}
   // Filter according to query params (sector required from index; other filters optional)
   let filteredCompanies = allCompanies.filter(c => {
     // sector match (case-insensitive)
