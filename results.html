@@ -231,6 +231,14 @@ if (!localStorage.getItem("jobpatra_data")) {
   });
 
   // initial render
+  // --- debug snippet start ---
+document.body.insertAdjacentHTML("afterbegin",
+  `<div style="background:#ffc;padding:6px;border-bottom:1px solid #ccc">
+     Loaded states: ${
+       Object.keys(window).filter(k=>k.endsWith("Companies")).length
+     } | AllCompanies: ${typeof allCompanies!=="undefined"?allCompanies.length:"?"}
+   </div>`);
+// --- debug snippet end ---
   render(filteredCompanies);
 });
 
