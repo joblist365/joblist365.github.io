@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JobPatra – Results</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f9ff;
+    margin: 0;
+    padding: 0;
+    color: #222;
+  }
+  header {
+    text-align: center;
+    background-color: #1565c0;
+    color: #fff;
+    padding: 20px;
+    font-size: 1.6rem;
+    font-weight: bold;
+  }
+  .note {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 10px auto;
+    max-width: 700px;
+  }
+  .container {
+    max-width: 700px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .company-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f8fbff;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .company-card.favorite-card { border-color: #e91e63; background: #fff0f4; }
+  .company-card.dimmed { opacity: 0.45; filter: grayscale(100%); }
+  .company-card:hover { background: #eaf3ff; transform: translateY(-2px); }
+  .company-name { font-weight: 700; color: #0d47a1; font-size: 1.1rem; }
+  .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .btn { border: none; border-radius: 6px; padding: 8px 12px; color: #fff; font-weight: 700; font-size: 0.9rem; text-decoration: none; cursor: pointer; display:inline-flex;align-items:center;gap:8px; }
+  .linkedin { background-color: #0a66c2; }
+  .career { background-color: #1976d2; }
+  .fav-btn { background-color: #e91e63; }
+  .na-btn { background-color: #9e9e9e; }
+  .ad-banner { text-align: center; margin-top: 20px; }
+  .ad-banner img { width: 100%; max-width: 468px; border-radius: 8px; transition: opacity 0.5s ease; }
+  .meta { color:#555;font-size:0.95rem;margin-top:6px; }
+  .roles { margin-top:6px; }
+  .empty { text-align:center;color:#555;padding:30px 0; }
+</style>
+</head>
+
+<body>
+<header>💼 JobPatra</header>
+
+<div class="note">
+  <a href="index.html" style="text-decoration:none;color:#fff;background:#2e7d32;padding:6px 12px;border-radius:6px;">← Back</a>
+  <span>⭐ Favorites always shown first</span>
+</div>
+
+<div class="container">
+  <input id="searchBox" type="text" placeholder="Search within results..." style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;margin-bottom:15px;font-size:1rem;">
+  <div id="results"></div>
+
+  <div class="ad-banner">
+    <img id="resultAd" src="https://via.placeholder.com/468x60.png?text=Ad+1" alt="Ad Banner">
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const resultsDiv = document.getElementById("results");
+  const searchBox = document.getElementById("searchBox");
+
+  // Helper to read query params
+  function getQuery() {
+    const params = new URLSearchParams(location.search);
+    return {
+      sector: (params.get('sector') || '').trim(),
+      state: (params.get('state') || '').trim(),
+      city: (params.get('city') || '').trim(),
+      role: (params.get('role') || '').trim()
+    };
+  }
+
+  const q = getQuery();
+
+  // Combine all states arrays defined in data.js
+  const allCompanies = [
+    ...(window.andhraPradeshCompanies || []),
+    ...(window.karnatakaCompanies || []),
+    ...(window.maharashtraCompanies || []),
+    ...(window.tamilNaduCompanies || []),
+    ...(window.delhiCompanies || [])
+    // if you add more arrays in data.js just append them here. Structure preserved.
+  ];
+  for (const key in window)
+  if (key.endsWith("Companies")) allCompanies.push(...(window[key] || []));
+
+  // Filter according to query params (sector required from index; other filters optional)
+  let filteredCompanies = allCompanies.filter(c => {
+    // sector match (case-insensitive)
+    if (q.sector && (!c.sector || c.sector.toLowerCase() !== q.sector.toLowerCase())) return false;
+    if (q.state && c.state.toLowerCase() !== q.state.toLowerCase()) return false;
+    if (q.city && c.city.toLowerCase() !== q.city.toLowerCase()) return false;
+    if (q.role && !c.roles.some(r => r.toLowerCase().includes(q.role.toLowerCase()))) return false;
+    return true;
+  });
+
+  const LS_FAV = 'jobpatra_favorites_v1';
+  const LS_NA = 'jobpatra_not_interested_v1';
+  const loadLocal = key => JSON.parse(localStorage.getItem(key) || "[]");
+  const saveLocal = (key, val) => localStorage.setItem(key, JSON.stringify(val));
+
+  function toggleFavorite(companyName) {
+    const fav = loadLocal(LS_FAV);
+    const idx = fav.indexOf(companyName);
+    if (idx === -1) {
+      fav.push(companyName);
+    } else {
+      fav.splice(idx,1);
+    }
+    saveLocal(LS_FAV, fav);
+    render(currentList);
+  }
+
+  function toggleNotInterested(companyName) {
+    const na = loadLocal(LS_NA);
+    const idx = na.indexOf(companyName);
+    if (idx === -1) {
+      na.push(companyName);
+      // also remove from favorites if present
+      const fav = loadLocal(LS_FAV);
+      const favIdx = fav.indexOf(companyName);
+      if (favIdx !== -1) { fav.splice(favIdx,1); saveLocal(LS_FAV,fav); }
+    } else {
+      na.splice(idx,1);
+    }
+    saveLocal(LS_NA, na);
+    render(currentList);
+  }
+
+  let currentList = filteredCompanies.slice();
+
+  function render(list) {
+    resultsDiv.innerHTML = "";
+    const fav = loadLocal(LS_FAV);
+    const na = loadLocal(LS_NA);
+
+    const sorted = [
+      ...list.filter(c => fav.includes(c.company)),
+      ...list.filter(c => !fav.includes(c.company) && !na.includes(c.company)),
+      ...list.filter(c => na.includes(c.company))
+    ];
+
+    if (sorted.length === 0) {
+      resultsDiv.innerHTML = `<div class="empty">No companies found for your filters.</div>`;
+      return;
+    }
+
+    sorted.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "company-card";
+      if (fav.includes(c.company)) card.classList.add('favorite-card');
+      if (na.includes(c.company)) card.classList.add('dimmed');
+
+      const rolesText = c.roles.join(", ");
+      card.innerHTML = `
+        <div class="company-name">${c.company}</div>
+        <div class="meta">${c.city}, ${c.state} · <em>${c.sector || 'N/A'}</em></div>
+        <div class="roles"><strong>Roles:</strong> ${rolesText}</div>
+        <div class="buttons" style="margin-top:10px;">
+          <a class="btn linkedin" href="${c.linkedin}" target="_blank">LinkedIn</a>
+          <a class="btn career" href="${c.career}" target="_blank">Career Page</a>
+          <button class="btn fav-btn" data-company="${c.company}" title="Favorite">❤️ Favorite</button>
+          <button class="btn na-btn" data-company="${c.company}" title="Not Interested">🚫 Not interested</button>
+        </div>
+      `;
+      resultsDiv.appendChild(card);
+    });
+
+    // attach handlers
+    document.querySelectorAll('.fav-btn').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        const name = e.currentTarget.getAttribute('data-company');
+        toggleFavorite(name);
+      });
+    });
+    document.querySelectorAll('.na-btn').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        const name = e.currentTarget.getAttribute('data-company');
+        toggleNotInterested(name);
+      });
+    });
+  }
+
+  // searchBox filters within already filteredCompanies
+  searchBox.addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+    const filtered = filteredCompanies.filter(
+      c =>
+        c.company.toLowerCase().includes(val) ||
+        c.roles.some(r => r.toLowerCase().includes(val)) ||
+        (c.city && c.city.toLowerCase().includes(val))
+    );
+    currentList = filtered;
+    render(filtered);
+  });
+
+  // initial render
+  render(filteredCompanies);
+});
+
+// === Rotating Ad ===
+const ads = [
+  "https://via.placeholder.com/468x60.png?text=Ad+1",
+  "https://via.placeholder.com/468x60.png?text=Ad+2",
+  "https://via.placeholder.com/468x60.png?text=Ad+3",
+  "https://via.placeholder.com/468x60.png?text=Ad+4"
+];
+let idx = 0;
+setInterval(() => {
+  const adImg = document.getElementById("resultAd");
+  idx = (idx + 1) % ads.length;
+  adImg.style.opacity = 0;
+  setTimeout(() => {
+    adImg.src = ads[idx];
+    adImg.style.opacity = 1;
+  }, 500);
+}, 10000);
+</script>
+</body>
+</html>
