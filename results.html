@@ -108,6 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ...(window.delhiCompanies || [])
     // if you add more arrays in data.js just append them here. Structure preserved.
   ];
+  for (const key in window)
+  if (key.endsWith("Companies")) allCompanies.push(...(window[key] || []));
 
   // Filter according to query params (sector required from index; other filters optional)
   let filteredCompanies = allCompanies.filter(c => {
