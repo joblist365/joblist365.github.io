@@ -1,259 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>JobPatra – Results</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobList365 – Search Results</title>
 
-<!-- SEO -->
-<meta name="description" content="JobPatra helps you discover verified company career pages, jobs, and hiring opportunities across India. Explore sectors, states, and roles easily.">
-<meta name="keywords" content="JobPatra, jobs in India, company career pages, Indian companies hiring, IT jobs, government jobs, startup jobs">
-<meta name="author" content="JobPatra">
+  <!-- ✅ Google Verification -->
+  <meta name="google-site-verification" content="your-unique-code-here" />
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1948921365546153"
+  <!-- ✅ Basic SEO -->
+  <meta name="description" content="JobList365 helps you discover verified company career pages, jobs, and hiring opportunities across India. Explore healthcare, IT, education, and more sectors.">
+  <meta name="keywords" content="JobList365, jobs in India, verified company jobs, Indian companies hiring, IT jobs, healthcare jobs, government jobs, startup jobs">
+  <meta name="author" content="JobList365">
+  <meta name="robots" content="index, follow">
+
+  <!-- ✅ Open Graph -->
+  <meta property="og:title" content="JobList365 – Find Real Jobs from Real Companies">
+  <meta property="og:description" content="Explore genuine job openings directly from verified company career pages across India.">
+  <meta property="og:image" content="https://joblist365.github.io/logo.png">
+  <meta property="og:url" content="https://joblist365.github.io/results.html">
+  <meta property="og:type" content="website">
+
+  <!-- ✅ Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="JobList365 – Find Real Jobs from Real Companies">
+  <meta name="twitter:description" content="Discover genuine jobs from official company career pages in India.">
+  <meta name="twitter:image" content="https://joblist365.github.io/logo.png">
+
+  <!-- ✅ Favicon -->
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <!-- ✅ Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1948921365546153"
      crossorigin="anonymous"></script>
 
-<!-- PapaParse -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <!-- ✅ CSV Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f5f9ff;
-    margin: 0;
-    padding: 0;
-    color: #222;
-  }
-  header {
-    text-align: center;
-    background-color: #1565c0;
-    color: #fff;
-    padding: 20px;
-    font-size: 1.6rem;
-    font-weight: bold;
-  }
-  .note {
-    background: #e3f2fd;
-    color: #0d47a1;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    margin: 10px auto;
-    max-width: 700px;
-  }
-  .container {
-    max-width: 700px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .company-card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #f8fbff;
-    transition: transform 0.12s ease, background 0.12s ease;
-  }
-  .company-card.favorite-card { border-color: #e91e63; background: #fff0f4; }
-  .company-card.dimmed { opacity: 0.45; filter: grayscale(100%); }
-  .company-card:hover { background: #eaf3ff; transform: translateY(-2px); }
-  .company-name { font-weight: 700; color: #0d47a1; font-size: 1.1rem; }
-  .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .btn { border: none; border-radius: 6px; padding: 8px 12px; color: #fff; font-weight: 700; font-size: 0.9rem; text-decoration: none; cursor: pointer; display:inline-flex;align-items:center;gap:8px; }
-  .linkedin { background-color: #0a66c2; }
-  .career { background-color: #1976d2; }
-  .fav-btn { background-color: #e91e63; }
-  .na-btn { background-color: #9e9e9e; }
-  .ad-banner { text-align: center; margin-top: 20px; }
-  .ad-banner img { width: 100%; max-width: 468px; border-radius: 8px; transition: opacity 0.5s ease; }
-  .meta { color:#555;font-size:0.95rem;margin-top:6px; }
-  .roles { margin-top:6px; }
-  .empty { text-align:center;color:#555;padding:30px 0; }
-</style>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f9ff; margin: 0; }
+    header { background: #1976d2; color: white; padding: 15px; text-align: center; font-size: 1.5rem; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 20px; background: white;
+                 border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .company { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .company:last-child { border: none; }
+    .company h3 { margin: 0; color: #0d47a1; }
+    .meta { color: #555; margin: 4px 0 8px; font-size: 0.9rem; }
+    .roles { margin-top: 8px; }
+    .role-item { margin: 6px 0; display: flex; align-items: center; flex-wrap: wrap; }
+    .role-title { flex: 1; }
+    .apply-btn {
+      background: #1976d2; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; text-decoration: none; font-size: 0.9rem;
+      transition: background 0.2s; margin-left: 6px;
+    }
+    .apply-btn:hover { background: #0d47a1; }
+    footer { text-align: center; color: #777; padding: 20px; font-size: 0.9rem; }
+  </style>
 </head>
 
 <body>
-<header>💼 JobPatra</header>
+  <header>💼 JobList365 – Search Results</header>
 
-<div class="note">
-  <a href="index.html" style="text-decoration:none;color:#fff;background:#2e7d32;padding:6px 12px;border-radius:6px;">← Back</a>
-  <span>⭐ Favorites always shown first</span>
-</div>
+  <div class="container" id="results">Loading results...</div>
 
-<div class="container">
-  <input id="searchBox" type="text" placeholder="Search within results..." style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;margin-bottom:15px;font-size:1rem;">
-  <div id="results"></div>
+  <footer>© 2025 JobList365 | <a href="index.html">Back to Search</a></footer>
 
-  <div class="ad-banner">
-    <img id="resultAd" src="https://via.placeholder.com/468x60.png?text=Ad+1" alt="Ad Banner">
-  </div>
-</div>
+  <script>
+  const CSV_FILE = "data.csv";
 
-<script>
-const CSV_FILE = "data.csv";
-
-function getQuery() {
-  const params = new URLSearchParams(location.search);
-  return {
-    sector: (params.get('sector') || '').trim(),
-    state: (params.get('state') || '').trim(),
-    city: (params.get('city') || '').trim()
-  };
-}
-
-async function loadCSV() {
-  return new Promise((resolve, reject) => {
-    Papa.parse(CSV_FILE, {
-      download: true,
-      header: true,
-      complete: results => {
-        if (!results.data) return reject("No data");
-        const seen = new Set();
-        const uniqueRows = [];
-
-        for (const row of results.data) {
-          const key = (row.Company + row.Sector + row.State + row.City).trim().toLowerCase();
-          if (!seen.has(key)) {
-            seen.add(key);
-            uniqueRows.push({
-              company: row.Company || "N/A",
-              sector: row.Sector || "N/A",
-              state: row.State || "N/A",
-              city: row.City || "N/A",
-              roles: (row.Roles || "").split(/[,;]+/).map(r => r.trim()).filter(Boolean),
-              linkedin: row.LinkedIn || "#",
-              career: row.Website || "#"
-            });
-          }
-        }
-        resolve(uniqueRows);
-      },
-      error: err => reject(err)
-    });
-  });
-}
-
-window.addEventListener("load", async () => {
-  const resultsDiv = document.getElementById("results");
-  const searchBox = document.getElementById("searchBox");
-  const q = getQuery();
-
-  let allCompanies = await loadCSV();
-
-  let filtered = allCompanies.filter(c => {
-    if (q.sector && c.sector.toLowerCase() !== q.sector.toLowerCase()) return false;
-    if (q.state && c.state.toLowerCase() !== q.state.toLowerCase()) return false;
-    if (q.city && c.city.toLowerCase() !== q.city.toLowerCase()) return false;
-    return true;
-  });
-
-  const LS_FAV = 'jobpatra_favorites_v1';
-  const LS_NA = 'jobpatra_not_interested_v1';
-  const loadLocal = key => JSON.parse(localStorage.getItem(key) || "[]");
-  const saveLocal = (key, val) => localStorage.setItem(key, JSON.stringify(val));
-
-  function toggleFavorite(companyName) {
-    const fav = loadLocal(LS_FAV);
-    const idx = fav.indexOf(companyName);
-    if (idx === -1) fav.push(companyName); else fav.splice(idx,1);
-    saveLocal(LS_FAV, fav);
-    render(currentList);
+  function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      sector: params.get("sector") || "",
+      state: params.get("state") || "",
+      city: params.get("city") || ""
+    };
   }
 
-  function toggleNotInterested(companyName) {
-    const na = loadLocal(LS_NA);
-    const idx = na.indexOf(companyName);
-    if (idx === -1) {
-      na.push(companyName);
-      const fav = loadLocal(LS_FAV);
-      const favIdx = fav.indexOf(companyName);
-      if (favIdx !== -1) { fav.splice(favIdx,1); saveLocal(LS_FAV,fav); }
-    } else na.splice(idx,1);
-    saveLocal(LS_NA, na);
-    render(currentList);
+  function cleanText(v) { return (v || "").trim(); }
+
+  async function loadCsv() {
+    try {
+      const res = await fetch(CSV_FILE, { cache: "no-store" });
+      const text = await res.text();
+      const parsed = Papa.parse(text, { header: true });
+      return parsed.data.filter(r => r.Company && r.Sector);
+    } catch (e) {
+      console.error("Error loading CSV", e);
+      return [];
+    }
   }
 
-  let currentList = filtered.slice();
-
-  function render(list) {
-    resultsDiv.innerHTML = "";
-    const fav = loadLocal(LS_FAV);
-    const na = loadLocal(LS_NA);
-    const sorted = [
-      ...list.filter(c => fav.includes(c.company)),
-      ...list.filter(c => !fav.includes(c.company) && !na.includes(c.company)),
-      ...list.filter(c => na.includes(c.company))
-    ];
-
-    if (sorted.length === 0) {
-      resultsDiv.innerHTML = `<div class="empty">No companies found for your filters.</div>`;
+  function renderResults(data) {
+    const container = document.getElementById("results");
+    if (data.length === 0) {
+      container.innerHTML = "<p>No matching results found.</p>";
       return;
     }
 
-    sorted.forEach(c => {
-      const card = document.createElement("div");
-      card.className = "company-card";
-      if (fav.includes(c.company)) card.classList.add('favorite-card');
-      if (na.includes(c.company)) card.classList.add('dimmed');
+    container.innerHTML = data.map(row => {
+      const roles = cleanText(row.Roles);
+      let roleHtml = "<p>No roles listed</p>";
 
-      const rolesText = c.roles.join(", ");
-      card.innerHTML = `
-        <div class="company-name">${c.company}</div>
-        <div class="meta">${c.city}, ${c.state} · <em>${c.sector}</em></div>
-        <div class="roles"><strong>Roles:</strong> ${rolesText}</div>
-        <div class="buttons" style="margin-top:10px;">
-          <a class="btn linkedin" href="${c.linkedin}" target="_blank">LinkedIn</a>
-          <a class="btn career" href="${c.career}" target="_blank">Career Page</a>
-          <button class="btn fav-btn" data-company="${c.company}" title="Favorite">❤️ Favorite</button>
-          <button class="btn na-btn" data-company="${c.company}" title="Not Interested">🚫 Not Interested</button>
+      if (roles) {
+        const roleItems = roles.split(";").map(r => r.trim()).filter(Boolean);
+        roleHtml = roleItems.map(item => {
+          if (item.includes("→ http")) {
+            const [title, link] = item.split("→").map(x => x.trim());
+            return `<div class="role-item">
+                      <span class="role-title">${title}</span>
+                      <a href="${link}" target="_blank" class="apply-btn">Apply Now</a>
+                    </div>`;
+          } else {
+            return `<div class="role-item">${item}</div>`;
+          }
+        }).join("");
+      }
+
+      return `
+        <div class="company">
+          <h3>${row.Company}</h3>
+          <div class="meta">${row.Sector || ""} ${row.State ? "• " + row.State : ""} ${row.City ? "• " + row.City : ""}</div>
+          <div class="roles">${roleHtml}</div>
+          ${row.Website ? `<p><a href="${row.Website}" target="_blank">${row.Website}</a></p>` : ""}
         </div>
       `;
-      resultsDiv.appendChild(card);
-    });
-
-    document.querySelectorAll('.fav-btn').forEach(b=>{
-      b.addEventListener('click', e=>toggleFavorite(e.currentTarget.dataset.company));
-    });
-    document.querySelectorAll('.na-btn').forEach(b=>{
-      b.addEventListener('click', e=>toggleNotInterested(e.currentTarget.dataset.company));
-    });
+    }).join("");
   }
 
-  searchBox.addEventListener("input", e => {
-    const val = e.target.value.toLowerCase();
-    const filteredNow = filtered.filter(
-      c => c.company.toLowerCase().includes(val) ||
-           c.roles.some(r => r.toLowerCase().includes(val)) ||
-           c.city.toLowerCase().includes(val)
+  document.addEventListener("DOMContentLoaded", async () => {
+    const params = getQueryParams();
+    const allData = await loadCsv();
+
+    const filtered = allData.filter(row =>
+      (!params.sector || row.Sector === params.sector) &&
+      (!params.state || row.State === params.state) &&
+      (!params.city || row.City === params.city)
     );
-    currentList = filteredNow;
-    render(filteredNow);
+
+    renderResults(filtered);
   });
-
-  render(filtered);
-
-  // Rotating ad
-  const ads = [
-    "https://via.placeholder.com/468x60.png?text=Ad+1",
-    "https://via.placeholder.com/468x60.png?text=Ad+2",
-    "https://via.placeholder.com/468x60.png?text=Ad+3"
-  ];
-  let i = 0;
-  setInterval(() => {
-    const adImg = document.getElementById("resultAd");
-    i = (i + 1) % ads.length;
-    adImg.style.opacity = 0;
-    setTimeout(() => {
-      adImg.src = ads[i];
-      adImg.style.opacity = 1;
-    }, 300);
-  }, 10000);
-});
-</script>
-
+  </script>
 </body>
 </html>
