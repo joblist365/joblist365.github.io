@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JobList365 – Explore Verified Careers in India</title>
+<meta name="description" content="JobList365 helps you discover verified company career pages, jobs, and hiring opportunities across India." />
+<meta name="google-site-verification" content="your-new-verification-code-here" />
+<link rel="icon" href="logo.png">
+<!-- AdSense async (keeps it non-blocking) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+        crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --deep:#0d47a1; --mid:#1565c0; --light:#f5f9ff; --accent:#1976d2;
+  }
+  body{font-family:Segoe UI,Roboto,Arial; background:var(--light); margin:0;color:#222;-webkit-font-smoothing:antialiased}
+  /* News bar */
+  #newsBar{background:linear-gradient(90deg,#e3f2fd,#ffffff);border-bottom:2px solid var(--mid);padding:8px 12px;display:flex;align-items:center;gap:12px;animation:fadeNews 1.2s ease 0.3s both}
+  #newsLabel{font-weight:800;color:var(--deep);padding:6px 12px;border-radius:6px}
+  #ticker{flex:1;overflow:hidden}
+  .tickerMove{display:inline-block;animation:scrollTicker 30s linear infinite;white-space:nowrap;color:var(--mid);font-weight:700}
+  @keyframes scrollTicker{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+  @keyframes fadeNews{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  /* header */
+  header#mainHeader{background:linear-gradient(90deg,var(--mid),var(--accent));color:#fff;padding:18px 12px;text-align:center;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  header#mainHeader h1{margin:0;font-size:1.6rem;letter-spacing:.3px}
+  header#mainHeader .tag{font-size:.9rem;color:#dbe7ff;margin-top:6px}
+
+  /* container blocks */
+  .wrap{max-width:900px;margin:20px auto;padding:12px}
+  .ad-line{display:flex;align-items:center;justify-content:center;height:90px;background:linear-gradient(90deg,#f7fbff,#eef6ff);border:1px dashed #cfe7ff;border-radius:10px;margin:12px 0;overflow:hidden;position:relative}
+  .about-card{background:#fff;border-radius:12px;padding:18px;border:1px solid #eef6ff;box-shadow:0 6px 18px rgba(16,52,122,0.04)}
+  .about-card h2{color:var(--deep);margin-top:0;font-weight:800}
+  .search-card{background:linear-gradient(180deg,#fff,#fbfeff);border-radius:12px;padding:16px;margin-top:14px;box-shadow:0 8px 24px rgba(16,52,122,0.04)}
+  label{font-weight:700;color:#333;font-size:.95rem;display:block;margin-top:6px}
+  input[type="search"], select{width:100%;padding:10px;border-radius:8px;border:1px solid #ccdff6;margin-top:8px;font-size:0.95rem}
+  button#searchBtn{width:100%;margin-top:12px;padding:12px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 6px 18px rgba(25,118,210,0.12)}
+  button#searchBtn:hover{filter:brightness(.95)}
+  p.note{color:#d32f2f;font-weight:700;margin-top:10px}
+
+  footer{background:var(--light);padding:16px;text-align:center;color:#334a64;margin-top:18px}
+  footer a{color:var(--mid);text-decoration:none;margin:0 6px;font-weight:600}
+
+  /* small screens */
+  @media(max-width:600px){
+    .ad-line{height:70px}
+    header#mainHeader h1{font-size:1.3rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- NEWS bar -->
+<div id="newsBar">
+  <div id="newsLabel">NEWS</div>
+  <div id="ticker"><div id="tickerInner" class="tickerMove">Loading latest job updates…</div></div>
+</div>
+
+<!-- header -->
+<header id="mainHeader">
+  <h1>🌐 JobList365</h1>
+  <div class="tag">Verified careers & genuine opportunities across India</div>
+</header>
+
+<!-- main -->
+<main class="wrap">
+
+  <!-- Top rotating ad (lazy loaded & rotating every 10s) -->
+  <div id="topAd" class="ad-line" aria-hidden="true">
+    <!-- we'll fill this by JS with either responsive ad unit or rotating placeholders -->
+    <div id="adSlot" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">Loading ad…</div>
+  </div>
+
+  <!-- About -->
+  <div class="about-card" id="aboutCard">
+    <h2>About JobList365</h2>
+    <p><strong>JobList365</strong> helps professionals find verified job openings directly from official company career pages across India. We focus on authenticity — every listing is linked to the employer’s own career page or official source. Our automated system scans trusted sources across sectors (IT, Healthcare, RCM, Pharma, Education, Finance, and more) and organizes verified opportunities by sector and state so you find real jobs faster.</p>
+
+    <h3 style="color:var(--deep);margin-bottom:6px">Our Mission</h3>
+    <p>To make job discovery reliable and scam-free — helping you reach genuine employers quickly.</p>
+
+    <h3 style="color:var(--deep);margin-bottom:6px">Why Choose JobList365?</h3>
+    <ul>
+      <li>We verify sources and reduce fake listings.</li>
+      <li>We categorize by sector and state for quicker results.</li>
+      <li>No middlemen — links go directly to company pages.</li>
+    </ul>
+  </div>
+
+  <!-- Search banner -->
+  <div class="search-card" id="searchCard" style="margin-top:18px">
+    <h2 style="color:var(--deep);margin:0 0 6px 0">Search Career Opportunities</h2>
+
+    <label for="freeText">Search roles or companies</label>
+    <input id="freeText" type="search" placeholder="e.g., software engineer, Audintel India Pvt Ltd" />
+
+    <label for="sectorSel">Sector (optional)</label>
+    <select id="sectorSel"><option value="">-- All Sectors --</option></select>
+
+    <label for="stateSel">State (optional)</label>
+    <select id="stateSel" disabled><option value="">-- Select State --</option></select>
+
+    <button id="searchBtn">🔍 Search</button>
+
+    <p class="note">Note: If you don't find new openings here, please verify thoroughly from your end on the company's official career page or LinkedIn.</p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="about.html">About</a> |
+  <a href="terms.html">Terms</a> |
+  <a href="privacy.html">Privacy</a> |
+  <a href="contact.html">Contact</a>
+  <div style="margin-top:8px;font-size:.9rem;color:#556477">© 2025 JobList365</div>
+</footer>
+
+<!-- PapaParse (CSV parsing) -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+/* CONFIG */
+const CSV_URL = 'data.csv'; // local file in repo root
+const AD_ROTATE_INTERVAL = 10000; // 10s
+const ADS_PLACEHOLDERS = [
+  // placeholders (you can put image URLs or AdSense unit HTML)
+  '<img src="https://via.placeholder.com/728x90?text=Ad+1" alt="ad" style="max-width:100%;height:90px;object-fit:cover" loading="lazy">',
+  '<img src="https://via.placeholder.com/728x90?text=Ad+2" alt="ad" style="max-width:100%;height:90px;object-fit:cover" loading="lazy">',
+  '<img src="https://via.placeholder.com/728x90?text=Ad+3" alt="ad" style="max-width:100%;height:90px;object-fit:cover" loading="lazy">'
+];
+// If you want real AdSense units, replace placeholders by your <ins class="adsbygoogle">…</ins> markup.
+
+/* STATE */
+let csvData = [];
+
+/* helper to load CSV */
+async function loadCsv() {
+  try {
+    const res = await fetch(CSV_URL + '?t=' + Date.now());
+    const txt = await res.text();
+    const parsed = Papa.parse(txt, { header: true, skipEmptyLines: true });
+    csvData = parsed.data || [];
+    populateSectorState(csvData);
+    buildTicker(csvData);
+  } catch (e) { console.error('CSV load error', e); }
+}
+
+/* populate sector and state dropdowns */
+function populateSectorState(data) {
+  const sectorSel = document.getElementById('sectorSel');
+  const stateSel = document.getElementById('stateSel');
+  const sectors = [...new Set(data.map(r => (r.Sector||'').trim()).filter(Boolean))].sort();
+  sectors.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; sectorSel.appendChild(o); });
+  sectorSel.addEventListener('change', () => {
+    const s = sectorSel.value;
+    stateSel.innerHTML = '<option value="">-- Select State --</option>';
+    const states = [...new Set(data.filter(r=>(!s||r.Sector===s)).map(r=> (r.State||'').trim()).filter(Boolean))].sort();
+    states.forEach(st=>{const o=document.createElement('option'); o.value=st; o.textContent=st; stateSel.appendChild(o);});
+    stateSel.disabled = states.length === 0;
+  });
+}
+
+/* ticker: count today's posts per sector */
+function buildTicker(data){
+  const today = new Date().toISOString().split('T')[0];
+  const counts = {};
+  data.forEach(r=>{
+    if (r.DatePosted && r.DatePosted.startsWith(today)){
+      const s = (r.Sector||'Other').trim();
+      counts[s] = (counts[s]||0)+1;
+    }
+  });
+  const tickerInner = document.getElementById('tickerInner');
+  if (!Object.keys(counts).length){ tickerInner.textContent = 'No new jobs posted today.'; return; }
+  tickerInner.innerHTML = Object.entries(counts).map(([s,c])=>`${s} – ${c} new`).join('  •  ');
+}
+
+/* search button behavior: go to results page with query params */
+document.addEventListener('click', (ev)=> {
+  if (ev.target && ev.target.id === 'searchBtn') {
+    const q = document.getElementById('freeText').value.trim();
+    const sector = document.getElementById('sectorSel').value;
+    const state = document.getElementById('stateSel').value;
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (sector) params.set('sector', sector);
+    if (state) params.set('state', state);
+    window.location.href = 'results.html?' + params.toString();
+  }
+});
+
+/* rotating ad logic (lazy load images / ad HTML) */
+(function rotateAds(){
+  const slot = document.getElementById('adSlot');
+  let idx = 0;
+  function showNext(){
+    slot.innerHTML = ADS_PLACEHOLDERS[idx];
+    // For real ads: after inserting <ins class="adsbygoogle">…</ins> call (adsbygoogle = window.adsbygoogle || []).push({});
+    idx = (idx+1) % ADS_PLACEHOLDERS.length;
+  }
+  showNext();
+  setInterval(showNext, AD_ROTATE_INTERVAL);
+})();
+
+/* init */
+loadCsv();
+</script>
+</body>
+</html>
