@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobList365 – Search Results</title>
+
+  <!-- ✅ Google Verification -->
+  <meta name="google-site-verification" content="your-verification-code-here" />
+
+  <!-- ✅ SEO -->
+  <meta name="description" content="Search verified job openings from trusted company career pages across India.">
+  <meta name="keywords" content="JobList365, India jobs, verified careers, company hiring, healthcare jobs, software jobs">
+  <meta name="author" content="JobList365">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7fbff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg, #1565c0, #0d47a1);
+      color: white;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      margin: 0;
+      text-shadow: 0 0 10px #64b5f6;
+    }
+
+    header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Info Bar */
+    .info-bar {
+      text-align: center;
+      background: #e3f2fd;
+      color: #0d47a1;
+      font-weight: 600;
+      padding: 8px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #bbdefb;
+    }
+
+    /* Results */
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover { transform: translateY(-3px); }
+
+    .company-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0d47a1;
+      margin-bottom: 5px;
+    }
+
+    .sector {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .roles {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .buttons button {
+      flex: 1;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    .buttons button:hover { opacity: 0.8; }
+
+    .career { background: #1976d2; }
+    .fav { background: #e91e63; }
+    .skip { background: #757575; }
+
+    /* Note */
+    .note {
+      background: #ffebee;
+      color: #b71c1c;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #555;
+      border-top: 2px solid #e3f2fd;
+    }
+
+    footer a {
+      color: #1565c0;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width:600px){
+      .buttons button { flex: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <button onclick="goBack()">⬅️</button>
+    <h1>JobList365 – Search Results</h1>
+    <div></div>
+  </header>
+
+  <div class="info-bar">⭐ Favorites always shown first</div>
+
+  <!-- Results -->
+  <div class="container" id="resultsContainer">
+    <!-- Cards injected here -->
+  </div>
+
+  <!-- Note -->
+  <div class="note">
+    Note: If you don't find new openings here, please verify thoroughly from your end on the company's official career page or LinkedIn.
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      <a href="about.html">About</a> |
+      <a href="terms.html">Terms</a> |
+      <a href="privacy.html">Privacy</a> |
+      <a href="contact.html">Contact</a> |
+      <a href="disclaimer.html">Disclaimer</a>
+    </div>
+    <p>© 2025 JobList365. All rights reserved.</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    function goBack() {
+      window.location.href = "index.html";
+    }
+
+    const sampleResults = [
+      { company: "Infosys Ltd", sector: "IT & Software", roles: "Software positions – 25", site: "https://www.infosys.com/" },
+      { company: "Apollo Hospitals", sector: "Healthcare", roles: "Healthcare openings – 46", site: "https://www.apollohospitals.com/" },
+      { company: "R1 RCM", sector: "RCM", roles: "RCM roles – 18", site: "https://www.r1rcm.com/" },
+    ];
+
+    const container = document.getElementById("resultsContainer");
+    sampleResults.forEach(res => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="company-name">${res.company}</div>
+        <div class="sector">${res.sector}</div>
+        <div class="roles">${res.roles || "No new openings found"}</div>
+        <div class="buttons">
+          <button class="career" onclick="window.open('${res.site}', '_blank')">Career Page</button>
+          <button class="fav" onclick="markFav('${res.company}')">❤️ Favorite</button>
+          <button class="skip" onclick="hideCard(this)">🚫 Not Interested</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    function hideCard(btn) {
+      btn.closest('.card').style.display = 'none';
+    }
+
+    function markFav(name) {
+      alert(name + " added to favorites!");
+    }
+
+    // Exit intent ad (first time only)
+    let shown = localStorage.getItem("exitAdShown");
+    if (!shown) {
+      window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+        showExitAd();
+        e.returnValue = "";
+      });
+    }
+
+    function showExitAd() {
+      alert("🎬 Before you go! Check this quick video from our partners.");
+      localStorage.setItem("exitAdShown", "true");
+    }
+  </script>
+</body>
+</html>
