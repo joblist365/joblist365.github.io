@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobList365 – Verified Careers & Genuine Opportunities Across India</title>
+
+  <!-- ✅ Google Verification -->
+  <meta name="google-site-verification" content="your-verification-code-here" />
+
+  <!-- ✅ SEO Meta -->
+  <meta name="description" content="Explore verified company career pages, job openings, and hiring opportunities across India with JobList365.">
+  <meta name="keywords" content="JobList365, jobs in India, verified company jobs, IT jobs, healthcare jobs, startup jobs, government jobs">
+  <meta name="author" content="JobList365">
+  <meta name="robots" content="index, follow">
+
+  <!-- ✅ Favicon -->
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <!-- ✅ Styles -->
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7fbff;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+
+    /* Header Title */
+    header {
+      text-align: center;
+      background: linear-gradient(90deg, #1565c0, #0d47a1);
+      color: white;
+      padding: 25px 15px;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #64b5f6, 0 0 20px #2196f3; }
+      to { text-shadow: 0 0 20px #1976d2, 0 0 40px #64b5f6; }
+    }
+
+    header small {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    /* News Bar */
+    .news-bar {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .news-bar span.title {
+      font-weight: 700;
+      color: #0d47a1;
+      animation: titleGlow 1.5s infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      from { text-shadow: 0 0 10px #64b5f6; }
+      to { text-shadow: 0 0 20px #0d47a1; }
+    }
+
+    .scroll-text {
+      display: inline-block;
+      padding-left: 15px;
+      animation: scroll 12s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Ad Banner */
+    .ad-banner {
+      text-align: center;
+      margin: 15px auto;
+    }
+
+    .ad-banner img {
+      width: 100%;
+      max-width: 468px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: opacity 0.3s ease;
+    }
+
+    /* About Section */
+    .about {
+      background: white;
+      max-width: 800px;
+      margin: 25px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .about h2 {
+      color: #0d47a1;
+      text-align: center;
+    }
+
+    /* Search Section */
+    .search-box {
+      max-width: 700px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: linear-gradient(90deg, #1976d2, #0d47a1);
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #0d47a1, #1565c0);
+    }
+
+    .note {
+      background: #ffebee;
+      color: #b71c1c;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #555;
+      border-top: 2px solid #e3f2fd;
+    }
+
+    footer a {
+      color: #1565c0;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      header { font-size: 1.6rem; padding: 20px; }
+      .about, .search-box { width: 90%; padding: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    JobList365
+    <small>Verified careers & genuine opportunities across India</small>
+  </header>
+
+  <!-- News Bar -->
+  <div class="news-bar">
+    <span class="title">NEWS:</span>
+    <span class="scroll-text">No new jobs posted today. Stay tuned for verified openings across all sectors.</span>
+  </div>
+
+  <!-- Ad Banner -->
+  <div class="ad-banner">
+    <img id="rotatingAd" src="https://via.placeholder.com/468x60.png?text=Ad+1" alt="Ad Banner">
+  </div>
+
+  <!-- About -->
+  <div class="about">
+    <h2>About JobList365</h2>
+    <p>
+      <strong>JobList365</strong> connects job seekers with verified company career pages directly, avoiding fake listings and ensuring genuine opportunities.
+      Our platform helps users explore roles by sector and location, simplifying your job search.
+    </p>
+    <h3>Our Mission</h3>
+    <p>To empower professionals across India by providing transparent, trustworthy, and up-to-date job information directly from company sources.</p>
+    <h3>Why Choose JobList365?</h3>
+    <ul>
+      <li>✅ Verified company websites – no middlemen</li>
+      <li>🔍 Easy filtering by sector and state</li>
+      <li>🚀 Regularly updated job listings</li>
+      <li>🇮🇳 Built for genuine job seekers in India</li>
+    </ul>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-box">
+    <h2 style="color:#0d47a1;text-align:center;">Search Career Opportunities</h2>
+
+    <label for="sector">Select Sector <small style="color:#b71c1c;">(required)</small></label>
+    <select id="sector" required>
+      <option value="">-- Select Sector --</option>
+      <option value="IT & Software">IT & Software</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="RCM">RCM</option>
+      <option value="Pharmaceuticals">Pharmaceuticals</option>
+      <option value="Education">Education</option>
+    </select>
+
+    <label for="state">Select State (optional)</label>
+    <select id="state">
+      <option value="">-- Select State --</option>
+      <option value="Andhra Pradesh">Andhra Pradesh</option>
+      <option value="Telangana">Telangana</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Maharashtra">Maharashtra</option>
+    </select>
+
+    <button id="searchBtn">🔍 Search</button>
+    <div class="note">Note: If you don't find new openings here, please verify thoroughly from your end on the company's official career page or LinkedIn.</div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      <a href="about.html">About</a> |
+      <a href="terms.html">Terms</a> |
+      <a href="privacy.html">Privacy</a> |
+      <a href="contact.html">Contact</a> |
+      <a href="disclaimer.html">Disclaimer</a>
+    </div>
+    <p>© 2025 JobList365. All rights reserved.</p>
+  </footer>
+
+  <!-- Script for Ad Rotation -->
+  <script>
+    const ads = [
+      "https://via.placeholder.com/468x60.png?text=Ad+1",
+      "https://via.placeholder.com/468x60.png?text=Ad+2",
+      "https://via.placeholder.com/468x60.png?text=Ad+3"
+    ];
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % ads.length;
+      const adImg = document.getElementById("rotatingAd");
+      adImg.style.opacity = 0;
+      setTimeout(() => {
+        adImg.src = ads[i];
+        adImg.style.opacity = 1;
+      }, 300);
+    }, 10000);
+  </script>
+</body>
+</html>
