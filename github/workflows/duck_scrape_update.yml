@@ -1,7 +1,7 @@
 name: JobList365 - DuckDuckGo Scraper Update
 
 on:
-  workflow_dispatch:   # allow manual trigger
+  workflow_dispatch:
   schedule:
     - cron: '0 19 * * *'  # runs daily at 00:30 IST (19:00 UTC previous day)
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Run DuckDuckGo scraper
         run: |
-          python duck_scraper.py
+          python scripts/duck_scraper.py
 
       - name: Commit & push updated CSV
         env:
@@ -40,6 +40,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Auto-update (DuckDuckGo scrape results) [ci skip]" || true
+            git commit -m "Auto-update DuckDuckGo scrape results [ci skip]" || true
             git push
           fi
