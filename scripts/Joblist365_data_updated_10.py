@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """
-Scraper for JobList365 — 10 companies test run
+Scraper for JobList365 — Only Website, Roles, and LinkedIn
 Reads:  Joblist365_data.csv
 Writes: data/Joblist365_data_updated_10.csv
-
-Columns:
-CompanyName, CompanyStateCode, CompanyIndustrialClassification, Website, Roles, LinkedIn
 """
 
 import os
@@ -37,8 +34,6 @@ def scraperapi_get(url):
         r = requests.get(api, params=params, headers=HEADERS, timeout=20)
         if r.status_code == 200:
             return r.text
-        else:
-            print(f"⚠️ ScraperAPI status {r.status_code} for {url}")
     except Exception as e:
         print(f"⚠️ Request failed: {e}")
     return ""
@@ -53,19 +48,16 @@ def extract_first_valid_link(html, exclude_words=None):
             "instagram.com", "justdial", "indiamart", "tradeindia"
         ]
     soup = BeautifulSoup(html, "html.parser")
-    links = []
     for a in soup.find_all("a", href=True):
         href = a["href"]
         m = re.search(r"/url\?q=(https?://[^&]+)", href)
         if m:
             link = m.group(1)
             if not any(bad in link.lower() for bad in exclude_words):
-                links.append(link)
-        elif href.startswith("http") and not any(bad in href.lower() for bad in exclude_words):
-            links.append(href)
-    return links[0] if links else ""
+                return link
+    return ""
 
-def google_search_official_website(company):
+def google_search_website(company):
     q = quote_plus(f"{company} official website")
     html = scraperapi_get(f"https://www.google.com/search?q={q}")
     return extract_first_valid_link(html)
@@ -82,37 +74,26 @@ def google_search_linkedin(company):
             return m.group(1)
     return ""
 
-def find_roles_from_text(text):
-    pattern = r"\b(software engineer|developer|data scientist|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|sales executive|marketing manager|accountant|designer|intern|technician)\b"
-    found = re.findall(pattern, text, flags=re.IGNORECASE)
-    return ", ".join(sorted(set([f.title() for f in found]))) if found else ""
-
-def extract_roles(company, linkedin_url=""):
-    if linkedin_url:
-        html = scraperapi_get(linkedin_url)
-        if html:
-            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-            roles = find_roles_from_text(text)
-            if roles:
-                return roles
+def extract_roles(company):
+    """Search for job roles for the company"""
     q = quote_plus(f"{company} jobs openings careers")
     html = scraperapi_get(f"https://www.google.com/search?q={q}")
-    if html:
-        text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-        roles = find_roles_from_text(text)
-        if roles:
-            return roles
-    return ""
+    if not html:
+        return ""
+    text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+    pattern = r"\b(software engineer|developer|data scientist|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|sales executive|marketing manager|accountant|designer|intern|technician)\b"
+    found = re.findall(pattern, text, flags=re.IGNORECASE)
+    roles = sorted(set(f.title() for f in found))
+    return ", ".join(roles[:20]) if roles else ""
 
 def process_company(i, row):
     company = str(row["CompanyName"])
     print(f"🔍 [{i+1}] Searching: {company}")
 
     result = {"Website": "", "LinkedIn": "", "Roles": ""}
-
-    result["Website"] = google_search_official_website(company)
+    result["Website"] = google_search_website(company)
     result["LinkedIn"] = google_search_linkedin(company)
-    result["Roles"] = extract_roles(company, result["LinkedIn"])
+    result["Roles"] = extract_roles(company)
 
     print(f"✅ [{i+1}] {company} → Website: {bool(result['Website'])}, LinkedIn: {bool(result['LinkedIn'])}, Roles: {bool(result['Roles'])}")
     return result
@@ -129,7 +110,6 @@ def main():
         raise SystemExit("❌ Column 'CompanyName' missing in CSV!")
 
     df = df.head(LIMIT)
-    results = []
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as exe:
         futures = {exe.submit(process_company, i, row): i for i, row in df.iterrows()}
@@ -138,20 +118,3 @@ def main():
             try:
                 res = fut.result()
                 for key, val in res.items():
-                    df.at[i, key] = val
-            except Exception as e:
-                print(f"⚠️ Error processing row {i}: {e}")
-
-    os.makedirs("data", exist_ok=True)
-    final_cols = ["CompanyName", "CompanyStateCode", "CompanyIndustrialClassification", "Website", "Roles", "LinkedIn"]
-    for c in final_cols:
-        if c not in df.columns:
-            df[c] = ""
-    df = df[final_cols]
-
-    df.to_csv(OUTPUT_PATH, index=False)
-    print(f"\n✅ Finished scraping {len(df)} companies.")
-    print(f"📁 Saved to {OUTPUT_PATH}")
-
-if __name__ == "__main__":
-    main()
