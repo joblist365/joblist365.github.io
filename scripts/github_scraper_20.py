@@ -17,7 +17,7 @@ from urllib.parse import quote_plus
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ---------- CONFIG ----------
-INPUT_PATH = "Joblist365_data.csv"
+INPUT_PATH = "JobList365_data.csv"
 OUTPUT_PATH = "data/Joblist365_data_updated_20.csv"
 SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
 LIMIT = 20
