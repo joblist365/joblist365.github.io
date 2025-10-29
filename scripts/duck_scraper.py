@@ -36,17 +36,35 @@ def duckduckgo_search(query):
     return ""
 
 def extract_first_link(html, include=None, exclude=None):
-    """Extract first relevant link from DuckDuckGo HTML."""
+    """Extract first relevant link from DuckDuckGo HTML (robust parser)."""
     if not html:
         return ""
+
     soup = BeautifulSoup(html, "html.parser")
-    for a in soup.select("a.result__a[href]"):
+
+    # Check both modern and old result link patterns
+    for a in soup.find_all("a", href=True):
         href = a["href"]
+        if not href.startswith("http"):
+            continue
         if exclude and any(x in href.lower() for x in exclude):
             continue
         if include and not any(x in href.lower() for x in include):
             continue
+        if "duckduckgo.com" in href.lower():
+            continue
         return href
+
+    # fallback: look for /l/?kh=-1&uddg=encoded URL format
+    for a in soup.find_all("a", href=True):
+        m = re.search(r"/l/\?kh=-1&uddg=(https?[^&]+)", a["href"])
+        if m:
+            link = requests.utils.unquote(m.group(1))
+            if exclude and any(x in link.lower() for x in exclude):
+                continue
+            if include and not any(x in link.lower() for x in include):
+                continue
+            return link
     return ""
 
 def find_roles_in_text(text):
