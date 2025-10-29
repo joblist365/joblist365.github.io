@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-JobList365 (joblist365.github.io)
-Scraper for first 20 companies — fetches Website, LinkedIn, Roles via ScraperAPI
-Output → data/JobList365_data_updated_20.csv
+Github-run scraper for JobList365 (joblist365.github.io)
+
+Reads:  JobList365_data.csv
+Writes: data/JobList365_data_updated.csv
+
+Columns:
+CompanyName, CompanyStateCode, CompanyIndustrialClassification, Website, Roles, LinkedIn
 """
 
 import os
 import re
-import time
-import random
 import requests
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,57 +19,50 @@ from urllib.parse import quote_plus
 
 # ---------- CONFIG ----------
 INPUT_PATH = "JobList365_data.csv"
-OUTPUT_PATH = "data/JobList365_data_updated_20.csv"
-SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "").strip()
-LIMIT = 20
-MAX_WORKERS = 20
-SAVE_EVERY = 10
-REQUEST_TIMEOUT = 20
+OUTPUT_PATH = "data/JobList365_data_updated.csv"
+SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
+LIMIT = 20                 # number of companies to process
+MAX_WORKERS = 20           # threads
+REQUEST_TIMEOUT = 15
+SAVE_EVERY = 5
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; JobList365Bot/1.0)"}
 # ----------------------------
 
 if not SCRAPERAPI_KEY:
     raise SystemExit("❌ ERROR: SCRAPERAPI_KEY not found. Add it to GitHub Secrets.")
 
-os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-
-def scraperapi_get(url, render=True, retries=2):
+# ---------- HELPERS ----------
+def scraperapi_get(url):
     api = "http://api.scraperapi.com"
-    params = {
-        "api_key": SCRAPERAPI_KEY,
-        "url": url,
-        "render": "true" if render else "false",
-        "country_code": "in",
-    }
-    for _ in range(retries + 1):
-        try:
-            r = requests.get(api, params=params, headers=HEADERS, timeout=REQUEST_TIMEOUT)
-            if r.status_code == 200 and "<html" in r.text.lower():
-                return r.text
-        except Exception:
-            pass
-        time.sleep(random.uniform(0.5, 1.2))
+    params = {"api_key": SCRAPERAPI_KEY, "url": url, "render": "false", "country_code": "in"}
+    try:
+        r = requests.get(api, params=params, headers=HEADERS, timeout=REQUEST_TIMEOUT)
+        if r.status_code == 200:
+            return r.text
+    except Exception:
+        pass
     return ""
 
-def pick_site_from_html(html):
+def pick_official_site_from_search_html(html):
     if not html:
         return ""
     soup = BeautifulSoup(html, "html.parser")
-    bad = ("linkedin.com", "facebook.com", "twitter.com", "youtube.com", "justdial", "indiamart")
     for a in soup.find_all("a", href=True):
         href = a["href"]
-        if href.startswith("/url?q="):
-            match = re.search(r"/url\?q=(https?://[^&]+)", href)
-            if match:
-                url = match.group(1)
-                if not any(b in url.lower() for b in bad):
-                    return url
+        m = re.search(r"/url\?q=(https?://[^&]+)", href)
+        if m:
+            link = m.group(1)
+            if not any(x in link.lower() for x in [
+                "linkedin.com", "facebook.com", "twitter.com", "instagram.com",
+                "youtube.com", "indiamart", "justdial", "tradeindia"
+            ]):
+                return link
     return ""
 
-def google_search_site(company):
+def google_search_company_site(company):
     q = quote_plus(f"{company} official website")
     html = scraperapi_get(f"https://www.google.com/search?q={q}")
-    return pick_site_from_html(html)
+    return pick_official_site_from_search_html(html)
 
 def google_search_linkedin(company):
     q = quote_plus(f"site:linkedin.com/company {company}")
@@ -76,78 +71,81 @@ def google_search_linkedin(company):
         return ""
     soup = BeautifulSoup(html, "html.parser")
     for a in soup.find_all("a", href=True):
-        href = a["href"]
-        match = re.search(r"/url\?q=(https?://[^&]+)", href)
-        if match and "linkedin.com/company" in match.group(1).lower():
-            return match.group(1)
+        m = re.search(r"/url\?q=(https?://[^&]+)", a["href"])
+        if m:
+            link = m.group(1)
+            if "linkedin.com/company" in link.lower():
+                return link
     return ""
 
-ROLE_RE = re.compile(
-    r"\b(software engineer|developer|data scientist|data engineer|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|nurse|doctor|medical coder|claims analyst|revenue cycle|receptionist|sales executive|marketing manager)\b",
-    re.I,
-)
+def find_roles_in_text(text):
+    pattern = r"\b(software engineer|developer|data scientist|data engineer|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|nurse|doctor|medical coder|claims analyst|revenue cycle|receptionist|sales executive|marketing manager)\b"
+    found = re.findall(pattern, text, flags=re.IGNORECASE)
+    roles = []
+    for f in found:
+        role = f.title()
+        if role not in roles:
+            roles.append(role)
+        if len(roles) >= 20:
+            break
+    return roles
 
-def extract_roles_from_text(text):
-    roles = list({m.title() for m in ROLE_RE.findall(text or "")})
-    return roles[:20]
-
-def extract_roles(company, linkedin_url):
+def extract_roles(company, linkedin_url=""):
     roles = []
     if linkedin_url:
-        html = scraperapi_get(linkedin_url + "/jobs")
+        html = scraperapi_get(linkedin_url)
         if html:
-            roles += extract_roles_from_text(html)
+            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+            roles = find_roles_in_text(text)
     if not roles:
-        q = quote_plus(f"{company} jobs")
+        q = quote_plus(f"site:linkedin.com/jobs {company}")
         html = scraperapi_get(f"https://www.google.com/search?q={q}")
-        roles += extract_roles_from_text(html)
-    return list(dict.fromkeys(roles))[:20]
+        if html:
+            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+            roles = find_roles_in_text(text)
+    return ", ".join(roles[:10]) if roles else ""
 
 def worker(i, company):
     result = {"CompanyName": company, "Website": "", "LinkedIn": "", "Roles": ""}
     try:
-        site = google_search_site(company)
-        if site:
-            result["Website"] = site
-            print(f"✅ [{i}] Website found for {company}: {site}")
-        link = google_search_linkedin(company)
-        if link:
-            result["LinkedIn"] = link
-            print(f"✅ [{i}] LinkedIn: {link}")
-        roles = extract_roles(company, link)
-        if roles:
-            result["Roles"] = ", ".join(roles)
-            print(f"   → Roles: {result['Roles']}")
-        else:
-            print(f"⚠️ [{i}] No roles found for {company}")
-    except Exception as e:
-        print(f"❌ [{i}] Error: {e}")
+        result["Website"] = google_search_company_site(company)
+        result["LinkedIn"] = google_search_linkedin(company)
+        result["Roles"] = extract_roles(company, result["LinkedIn"])
+    except Exception:
+        pass
     return result
 
+# ---------- MAIN ----------
 def main():
-    df = pd.read_csv(INPUT_PATH, dtype=str)
-    for c in ["Website", "Roles", "LinkedIn"]:
-        if c not in df.columns:
-            df[c] = ""
+    if not os.path.exists(INPUT_PATH):
+        raise SystemExit(f"❌ Missing input file: {INPUT_PATH}")
+
+    df = pd.read_csv(INPUT_PATH, dtype=str).fillna("")
     df = df.head(LIMIT)
-    out = df.copy()
+
+    for col in ["Website", "Roles", "LinkedIn"]:
+        if col not in df.columns:
+            df[col] = ""
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as exe:
-        futures = {exe.submit(worker, i, str(out.at[i, 'CompanyName'])): i for i in range(len(out))}
+        futures = {exe.submit(worker, i, df.at[i, "CompanyName"]): i for i in range(len(df))}
         for fut in as_completed(futures):
             i = futures[fut]
             try:
                 res = fut.result()
-                for k in ["Website", "Roles", "LinkedIn"]:
-                    out.at[i, k] = res.get(k, "")
-            except Exception as e:
-                print(f"❌ Worker {i} failed: {e}")
-            if (i + 1) % SAVE_EVERY == 0:
-                out.to_csv(OUTPUT_PATH, index=False)
-                print(f"💾 Auto-saved {i+1}/{len(out)}")
+                for k in ["Website", "LinkedIn", "Roles"]:
+                    df.at[i, k] = res.get(k, df.at[i, k])
+            except Exception:
+                pass
 
-    out.to_csv(OUTPUT_PATH, index=False)
-    print(f"✅ Done. Saved {len(out)} companies → {OUTPUT_PATH}")
+    final_cols = ["CompanyName", "CompanyStateCode", "CompanyIndustrialClassification", "Website", "Roles", "LinkedIn"]
+    for c in final_cols:
+        if c not in df.columns:
+            df[c] = ""
+    df = df[final_cols]
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    df.to_csv(OUTPUT_PATH, index=False)
+    print(f"✅ Done. Updated file saved to {OUTPUT_PATH}")
 
 if __name__ == "__main__":
     main()
