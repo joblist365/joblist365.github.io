@@ -2,7 +2,7 @@
 """
 Github-run scraper for JobList365 (joblist365.github.io)
 
-Reads:  data/JobList365_data.csv
+Reads:  JobList365_data.csv
 Writes: data/JobList365_data_updated.csv   <-- safe incremental update
 
 Columns:
@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 
 # ---------- CONFIG ----------
-INPUT_PATH = "joblist365_data.csv"
+INPUT_PATH = "Joblist365_data.csv"
 OUTPUT_PATH = "data/JobList365_data_updated.csv"
 SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
 LIMIT = 1000                # process at most this many rows per run
