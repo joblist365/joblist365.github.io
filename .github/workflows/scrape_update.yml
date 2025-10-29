@@ -1,24 +1,24 @@
-name: JobList365 Scraper (20 Companies)
+name: JobList365 - Scrape and Update (20 companies)
 
 on:
-  workflow_dispatch:       # manual run
-  schedule:
-    - cron: "0 19 * * *"   # every day 00:30 IST
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install requests beautifulsoup4 pandas
 
       - name: Run scraper
@@ -27,17 +27,11 @@ jobs:
         run: |
           python scripts/github_scraper_20.py
 
-      - name: Commit results
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Commit and push results
         run: |
-          git config user.name "${GIT_AUTHOR_NAME}"
-          git config user.email "${GIT_AUTHOR_EMAIL}"
-          git add data/JobList365_data_updated_20.csv || true
-          if git diff --staged --quiet; then
-            echo "No new changes to commit"
-          else
-            git commit -m "Auto-update: scraped 20 companies [ci skip]" || true
-            git push
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/Joblist365_data_updated_20.csv || true
+          git commit -m "Auto-update scraped company data (20 batch) [ci skip]" || true
+          git pull --rebase
+          git push
