@@ -3,10 +3,10 @@
 Github-run scraper for JobList365 (joblist365.github.io)
 
 Reads:  JobList365_data.csv
-Writes: data/JobList365_data_updated.csv   <-- safe incremental update
+Writes: data/JobList365_data_updated.csv
 
 Columns:
-companyName, CompanyStatecode, companyindustrialclassication, website, Roles, Linkedin
+CompanyName, CompanyStateCode, CompanyIndustrialClassification, Website, Roles, LinkedIn
 """
 
 import os
@@ -22,9 +22,9 @@ from urllib.parse import quote_plus
 INPUT_PATH = "Joblist365_data.csv"
 OUTPUT_PATH = "data/JobList365_data_updated.csv"
 SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
-LIMIT = 1000                # process at most this many rows per run
-MAX_WORKERS = 20            # threads
-SAVE_EVERY = 100            # autosave after this many processed
+LIMIT = 1000
+MAX_WORKERS = 20
+SAVE_EVERY = 100
 REQUEST_TIMEOUT = 15
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; JobList365Bot/1.0)"}
 # ----------------------------
@@ -57,7 +57,8 @@ def pick_official_site_from_search_html(html):
                 candidates.append(m.group(1))
         elif href.startswith("http"):
             candidates.append(href)
-    bad = ("linkedin.com", "facebook.com", "youtube.com", "twitter.com", "instagram.com", "justdial", "indiamart", "tradeindia")
+    bad = ("linkedin.com", "facebook.com", "youtube.com", "twitter.com",
+           "instagram.com", "justdial", "indiamart", "tradeindia")
     for c in candidates:
         cl = c.lower()
         if any(b in cl for b in bad):
@@ -121,16 +122,16 @@ def extract_roles_from_linkedin(linkedin_url, company):
     return roles
 
 def worker(i, company):
-    result = {"index": i, "companyName": company, "website": "", "Linkedin": "", "Roles": ""}
+    result = {"index": i, "CompanyName": company, "Website": "", "LinkedIn": "", "Roles": ""}
     try:
         site = google_search_company_site(company)
         if site:
-            result["website"] = site
+            result["Website"] = site
         lnk = google_search_linkedin(company)
         if lnk:
-            result["Linkedin"] = lnk
-        if result["Linkedin"]:
-            roles = extract_roles_from_linkedin(result["Linkedin"], company)
+            result["LinkedIn"] = lnk
+        if result["LinkedIn"]:
+            roles = extract_roles_from_linkedin(result["LinkedIn"], company)
             if roles:
                 result["Roles"] = ", ".join(roles)
         if not result["Roles"]:
@@ -151,7 +152,7 @@ def main():
         raise SystemExit(f"❌ Input file missing: {INPUT_PATH}")
 
     df = pd.read_csv(INPUT_PATH, dtype=str)
-    for col in ["website", "Roles", "Linkedin"]:
+    for col in ["Website", "Roles", "LinkedIn"]:
         if col not in df.columns:
             df[col] = ""
 
@@ -161,18 +162,18 @@ def main():
     if os.path.exists(OUTPUT_PATH):
         print(f"🧩 Found existing progress file: {OUTPUT_PATH}")
         old = pd.read_csv(OUTPUT_PATH, dtype=str)
-        for col in ["website", "Roles", "Linkedin"]:
+        for col in ["Website", "Roles", "LinkedIn"]:
             if col not in old.columns:
                 old[col] = ""
         out_df = out_df.merge(
-            old[["companyName", "website", "Roles", "Linkedin"]],
-            on="companyName", how="left", suffixes=("", "_old")
+            old[["CompanyName", "Website", "Roles", "LinkedIn"]],
+            on="CompanyName", how="left", suffixes=("", "_old")
         )
-        for col in ["website", "Roles", "Linkedin"]:
+        for col in ["Website", "Roles", "LinkedIn"]:
             out_df[col] = out_df[col].fillna(out_df[f"{col}_old"])
             out_df.drop(columns=[f"{col}_old"], inplace=True)
-        resume_from = out_df.query("website == '' and Linkedin == ''").index.min() or 0
-        completed = out_df["website"].astype(bool).sum()
+        resume_from = out_df.query("Website == '' and LinkedIn == ''").index.min() or 0
+        completed = out_df["Website"].astype(bool).sum()
         print(f"🔄 Resumed progress. Completed: {completed} entries. Resuming from row {resume_from + 1}")
     else:
         resume_from = 0
@@ -185,14 +186,14 @@ def main():
 
     processed = 0
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as exe:
-        futures = {exe.submit(worker, i, str(out_df.at[i, "companyName"])): i for i in indices}
+        futures = {exe.submit(worker, i, str(out_df.at[i, "CompanyName"])): i for i in indices}
         for fut in as_completed(futures):
             i = futures[fut]
             try:
                 res = fut.result()
                 if res:
-                    out_df.at[i, "website"] = res.get("website", "") or out_df.at[i, "website"]
-                    out_df.at[i, "Linkedin"] = res.get("Linkedin", "") or out_df.at[i, "Linkedin"]
+                    out_df.at[i, "Website"] = res.get("Website", "") or out_df.at[i, "Website"]
+                    out_df.at[i, "LinkedIn"] = res.get("LinkedIn", "") or out_df.at[i, "LinkedIn"]
                     out_df.at[i, "Roles"] = res.get("Roles", "") or out_df.at[i, "Roles"]
                     processed += 1
             except Exception:
@@ -201,7 +202,7 @@ def main():
                 out_df.to_csv(OUTPUT_PATH, index=False)
                 print(f"💾 Auto-saved progress: {processed} processed")
 
-    final_cols = ["companyName", "CompanyStatecode", "companyindustrialclassication", "website", "Roles", "Linkedin"]
+    final_cols = ["CompanyName", "CompanyStateCode", "CompanyIndustrialClassification", "Website", "Roles", "LinkedIn"]
     for c in final_cols:
         if c not in out_df.columns:
             out_df[c] = ""
