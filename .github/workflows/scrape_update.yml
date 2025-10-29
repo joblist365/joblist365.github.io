@@ -1,0 +1,47 @@
+name: JobList365 - Scrape and Update
+
+on:
+  workflow_dispatch:   # allow manual run from Actions tab
+  schedule:
+    - cron: '0 19 * * *'  # daily at 00:30 IST (19:00 UTC previous day) - adjust as you like
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 pandas
+
+      - name: Run scraper
+        env:
+          SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
+        run: |
+          python scripts/github_scraper.py
+
+      - name: Commit & push updated CSV (if changed)
+        env:
+          GIT_AUTHOR_NAME: "github-actions[bot]"
+          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+        run: |
+          git config user.name "${GIT_AUTHOR_NAME}"
+          git config user.email "${GIT_AUTHOR_EMAIL}"
+          git add data/JobList365_data_updated.csv || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update JobList365_data (website/linkedin/roles) [ci skip]" || true
+            git push
+          fi
