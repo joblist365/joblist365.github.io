@@ -32,6 +32,9 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; JobList365Bot/1.0)"}
 if not SCRAPERAPI_KEY:
     raise SystemExit("❌ ERROR: SCRAPERAPI_KEY not found. Add it to GitHub Secrets.")
 
+# ✅ ensure the output folder exists before saving
+os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+
 # ---------- HELPERS ----------
 def scraperapi_get(url):
     api = "http://api.scraperapi.com"
