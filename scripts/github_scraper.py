@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 
 # ---------- CONFIG ----------
-INPUT_PATH = "data/JobList365_data.csv"
+INPUT_PATH = "JobList365_data.csv"
 OUTPUT_PATH = "data/JobList365_data_updated.csv"
 SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
 LIMIT = 1000                # process at most this many rows per run
