@@ -17,7 +17,7 @@ from urllib.parse import quote_plus
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ---------- CONFIG ----------
-INPUT_PATH = "JobList365_data.csv"
+INPUT_PATH = "Joblist365_data.csv"
 OUTPUT_PATH = "data/Joblist365_data_duckduck_updated.csv"
 LIMIT = 10               # process 10 companies for testing
 MAX_WORKERS = 5
