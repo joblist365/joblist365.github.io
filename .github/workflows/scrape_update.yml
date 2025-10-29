@@ -1,47 +1,33 @@
-name: JobList365 - 10 Company Scraper
+#!/usr/bin/env python3
+"""
+DuckDuckGo Scraper for JobList365 (Free + Safe)
+Reads:  Joblist365_data.csv
+Writes: data/Joblist365_data_duckduck_updated_20.csv
 
-on:
-  workflow_dispatch:        # allows manual run from GitHub Actions tab
-  schedule:
-    - cron: '0 18 * * *'    # runs every day at 11:30 PM IST (18:00 UTC)
+Columns handled:
+CompanyName, CompanyStateCode, CompanyIndustrialClassification, Website, Roles, LinkedIn
+"""
 
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
+import os
+import re
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    steps:
-      - name: 🧾 Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+# ---------- CONFIG ----------
+INPUT_PATH = "Joblist365_data.csv"
+OUTPUT_PATH = "data/Joblist365_data_duckduck_updated_20.csv"
+LIMIT = 10               # number of companies to process
+MAX_WORKERS = 5          # number of parallel threads
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; JobList365Bot/1.0)"}
+# ----------------------------
 
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: 📦 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pandas
-
-      - name: 🚀 Run scraper (10 companies)
-        env:
-          SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
-        run: |
-          python scripts/Joblist365_data_updated_10.py
-
-      - name: 💾 Commit and push updated data
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
-        run: |
-          git config user.name "${GIT_AUTHOR_NAME}"
-          git config user.email "${GIT_AUTHOR_EMAIL}"
-          git add data/Joblist365_data_updated_10.csv || true
-          if git diff --staged --quiet; then
-            echo "✅ No new data to commit"
-          else
-            git commit -m "🔁 Auto-update JobList365 10-company scrape [ci skip]" || true
-            git push
-          fi
+def duckduckgo_search(query):
+    """Fetch HTML from DuckDuckGo search results."""
+    url = f"https://duckduckgo.com/html/?q={quote_plus(query)}"
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=15)
+        if r.status_code == 200:
+            return r.text
