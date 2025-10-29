@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Scraper for JobList365 — test with 20 companies
+Scraper for JobList365 — 10 companies test run
 Reads:  Joblist365_data.csv
-Writes: data/Joblist365_data_updated_20.csv
+Writes: data/Joblist365_data_updated_10.csv
 
 Columns:
 CompanyName, CompanyStateCode, CompanyIndustrialClassification, Website, Roles, LinkedIn
@@ -18,10 +18,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ---------- CONFIG ----------
 INPUT_PATH = "JobList365_data.csv"
-OUTPUT_PATH = "data/Joblist365_data_updated_20.csv"
+OUTPUT_PATH = "data/Joblist365_data_updated_10.csv"
 SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
-LIMIT = 20
-MAX_WORKERS = 5  # smaller number to test stability
+LIMIT = 10
+MAX_WORKERS = 5
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; JobList365Bot/1.0)"}
 # ----------------------------
 
@@ -38,7 +38,7 @@ def scraperapi_get(url):
         if r.status_code == 200:
             return r.text
         else:
-            print(f"⚠️ ScraperAPI status: {r.status_code} for {url}")
+            print(f"⚠️ ScraperAPI status {r.status_code} for {url}")
     except Exception as e:
         print(f"⚠️ Request failed: {e}")
     return ""
@@ -48,9 +48,10 @@ def extract_first_valid_link(html, exclude_words=None):
     if not html:
         return ""
     if exclude_words is None:
-        exclude_words = ["linkedin.com", "facebook.com", "youtube.com", "twitter.com",
-                         "instagram.com", "justdial", "indiamart", "tradeindia"]
-
+        exclude_words = [
+            "linkedin.com", "facebook.com", "youtube.com", "twitter.com",
+            "instagram.com", "justdial", "indiamart", "tradeindia"
+        ]
     soup = BeautifulSoup(html, "html.parser")
     links = []
     for a in soup.find_all("a", href=True):
@@ -82,8 +83,8 @@ def google_search_linkedin(company):
     return ""
 
 def find_roles_from_text(text):
-    roles_pattern = r"\b(software engineer|developer|data scientist|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|sales executive|marketing manager|accountant|designer|intern|technician)\b"
-    found = re.findall(roles_pattern, text, flags=re.IGNORECASE)
+    pattern = r"\b(software engineer|developer|data scientist|analyst|manager|consultant|associate|officer|executive|qa engineer|project manager|sales executive|marketing manager|accountant|designer|intern|technician)\b"
+    found = re.findall(pattern, text, flags=re.IGNORECASE)
     return ", ".join(sorted(set([f.title() for f in found]))) if found else ""
 
 def extract_roles(company, linkedin_url=""):
@@ -105,14 +106,15 @@ def extract_roles(company, linkedin_url=""):
 
 def process_company(i, row):
     company = str(row["CompanyName"])
-    result = {"Website": "", "LinkedIn": "", "Roles": ""}
     print(f"🔍 [{i+1}] Searching: {company}")
+
+    result = {"Website": "", "LinkedIn": "", "Roles": ""}
 
     result["Website"] = google_search_official_website(company)
     result["LinkedIn"] = google_search_linkedin(company)
     result["Roles"] = extract_roles(company, result["LinkedIn"])
 
-    print(f"✅ [{i+1}] {company} → W:{bool(result['Website'])}, L:{bool(result['LinkedIn'])}, R:{bool(result['Roles'])}")
+    print(f"✅ [{i+1}] {company} → Website: {bool(result['Website'])}, LinkedIn: {bool(result['LinkedIn'])}, Roles: {bool(result['Roles'])}")
     return result
 
 # ---------- MAIN ----------
@@ -141,6 +143,12 @@ def main():
                 print(f"⚠️ Error processing row {i}: {e}")
 
     os.makedirs("data", exist_ok=True)
+    final_cols = ["CompanyName", "CompanyStateCode", "CompanyIndustrialClassification", "Website", "Roles", "LinkedIn"]
+    for c in final_cols:
+        if c not in df.columns:
+            df[c] = ""
+    df = df[final_cols]
+
     df.to_csv(OUTPUT_PATH, index=False)
     print(f"\n✅ Finished scraping {len(df)} companies.")
     print(f"📁 Saved to {OUTPUT_PATH}")
